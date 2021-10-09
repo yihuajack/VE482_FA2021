@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        vim \PYGZti{}/.ssh/config  \PYG{c+c1}{\PYGZsh{} add minix host}
+        ssh minix
+\end{Verbatim}

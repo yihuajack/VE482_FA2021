@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        ssh root@192.168.36.136 \PYGZhy{}p \PYG{l+m}{2222}
+\end{Verbatim}

@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    ifconfig \PYG{p}{|} awk \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}\PYGZob{}for (i = 1; i \PYGZlt{}= NF; ++i) \PYGZob{}if (\PYGZdl{}i==\PYGZdq{}inet\PYGZdq{}) \PYGZob{}printf \PYGZdl{}(i+1)\PYGZdq{}\PYGZbs{}n\PYGZdq{}\PYGZcb{}\PYGZcb{}\PYGZcb{}\PYGZsq{}}
+\end{Verbatim}

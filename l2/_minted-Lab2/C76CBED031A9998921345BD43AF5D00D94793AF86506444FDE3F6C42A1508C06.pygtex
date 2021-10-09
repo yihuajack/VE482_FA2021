@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        pkgin update
+        pkgin install openssh
+        user add \PYGZhy{}m \PYGZhy{}g users yihua  \PYG{c+c1}{\PYGZsh{} optional, \PYGZdq{}users\PYGZdq{} is the group name (the same as \PYGZdq{}other\PYGZdq{})}
+\end{Verbatim}

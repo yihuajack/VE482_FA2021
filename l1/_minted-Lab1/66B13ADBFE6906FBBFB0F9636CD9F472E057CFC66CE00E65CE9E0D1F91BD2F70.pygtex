@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        find /etc \PYGZhy{}atime \PYGZhy{}1
+        find /etc \PYGZhy{}name \PYG{l+s+s2}{\PYGZdq{}*netw*\PYGZdq{}}
+\end{Verbatim}

@@ -1,0 +1,16 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+ch}{\PYGZsh{}!/bin/zsh}
+\PYG{n+nv}{r}\PYG{o}{=}\PYG{n+nv}{\PYGZdl{}RANDOM}
+\PYG{k}{while} \PYG{n+nb}{read} INPUT
+\PYG{k}{do}
+    \PYG{k}{if} \PYG{o}{[} \PYG{n+nv}{\PYGZdl{}INPUT} \PYGZhy{}gt \PYG{n+nv}{\PYGZdl{}r} \PYG{o}{]}
+    \PYG{k}{then}
+        \PYG{n+nb}{echo} \PYG{l+s+s2}{\PYGZdq{}Smaller\PYGZdq{}}
+    \PYG{k}{elif} \PYG{o}{[} \PYG{n+nv}{\PYGZdl{}INPUT} \PYGZhy{}lt \PYG{n+nv}{\PYGZdl{}r} \PYG{o}{]}
+    \PYG{k}{then}
+        \PYG{n+nb}{echo} \PYG{l+s+s2}{\PYGZdq{}Larger\PYGZdq{}}
+    \PYG{k}{else}
+        \PYG{n+nb}{break}
+    \PYG{k}{fi}
+\PYG{k}{done}
+\end{Verbatim}

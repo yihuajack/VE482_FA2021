@@ -1,0 +1,1 @@
+curl "https://aqicn.org/?city=Shanghai&widgetscript&size=large" 2>/dev/null | sed -nE 's/.*title=\\"Moderate\\">([[:digit:]]{1,3}).*>([-]?[[:digit:]]{1,5})<\\\/td><\\\/tr><\\.*/AQ: \1 Temp: \2 ºC/p'

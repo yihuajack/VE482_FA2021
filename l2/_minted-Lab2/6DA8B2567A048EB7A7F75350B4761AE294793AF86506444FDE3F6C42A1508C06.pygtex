@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        vi /usr/pkg/etc/ssh/sshd\PYGZus{}config  \PYG{c+c1}{\PYGZsh{} delete \PYGZsh{} and change the line to Port 2222}
+\end{Verbatim}

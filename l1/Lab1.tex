@@ -1,0 +1,241 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,caption,float,graphicx,minted,onimage,xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{Lab1.bib}
+\captionsetup[figure]{labelsep=period}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\renewcommand\thesection{\arabic{section}}
+\usemintedstyle{emacs}
+\begin{document}
+\begin{center}
+    \huge
+    \textbf{VE482\\Introduction to Operating Systems\\}
+    \Large
+    \vspace{15pt}
+    \uppercase{\textbf{Lab 1}}\\
+    \large
+    \vspace{5pt}\today\\
+    \vspace{5pt}
+    Yihua Liu 518021910998
+    \vspace{5pt}
+    \rule[-5pt]{.97\linewidth}{0.05em}
+\end{center}
+\section{Hardware overview}
+In the computer locate:
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{1.jpg}[color=red]
+        \draw [line width=3pt] (0.1,0.1) rectangle (0.9,0.9);
+    \end{tikzonimage}
+    \caption{The motherboard.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{2.jpg}[color=red]
+        \draw [line width=3pt] (0.08,0.4) rectangle (0.95,0.7);
+    \end{tikzonimage}
+    \caption{The PC power supply.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{3.jpg}[color=red]
+        \draw [line width=3pt] (0.35,0.5) rectangle (0.7,0.55);
+    \end{tikzonimage}
+    \caption{A Hard Disk Drive.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{8.jpg}[color=red]
+        \draw [line width=3pt] (0.4,0.48) rectangle (0.54,0.54);
+    \end{tikzonimage}
+    \caption{A PCI card\protect\footnotemark \cite{pcicard}.}
+\end{figure}
+\footnotetext{There is no PCI card on the lab computer, so using an online picture instead.}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{5.jpg}[color=red]
+        \draw [line width=3pt] (0.2,0.07) rectangle (0.55,0.58);
+    \end{tikzonimage}
+    \caption{An Optical disk drive.}
+\end{figure}
+On the motherboard locate:
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{6.jpg}[color=red]
+        \draw [line width=3pt] (0.17,0.25) rectangle (0.85,0.5);
+    \end{tikzonimage}
+    \caption{The RAM.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{7.jpg}[color=red]
+        \draw [line width=3pt] (0.47,0.71) rectangle (0.55,0.83);
+    \end{tikzonimage}
+    \caption{The South bridge (the North bridge is embedded inside the CPU for modern designs).}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{4.jpg}[color=red]
+        \draw [line width=3pt] (0.4,0.48) rectangle (0.54,0.54);
+    \end{tikzonimage}
+    \caption{A SATA socket.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{9.jpg}[color=red]
+        \draw [line width=3pt] (0.6,0.47) rectangle (0.76,0.55);
+        \node at (0.85,0.51) {PCI slot};
+        \draw [line width=3pt] (0.29,0.6) rectangle (0.76,0.68);
+        \node at (0.85,0.64) {PCI-e slot};
+    \end{tikzonimage}
+    \caption{A PCI/PCI-e slot.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{10.jpg}[color=red]
+        \draw [line width=3pt] (0.35,0.19) rectangle (0.48,0.28);
+    \end{tikzonimage}
+    \caption{The battery.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{11.jpg}[color=red]
+        \draw [line width=3pt] (0.47,0.4) rectangle (0.65,0.6);
+    \end{tikzonimage}
+    \caption{The CPU.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \begin{tikzonimage}[width=0.8\textwidth]{12.jpg}[color=red]
+        \draw [line width=2pt] (0.57,0.5) rectangle (0.6,0.52);
+    \end{tikzonimage}
+    \caption{The BIOS (APL5930 V0151).}
+\end{figure}
+Answer the following questions:
+\begin{itemize}
+    \item Where is the CPU hidden, and why?\\The CPU is hidden under the cover in the center of the motherboard. It is hidden because we need to protect it from possible physical stress outside and ensure its proper operation.
+    \item What are the North and South bridges?\\A northbridge or host bridge, also known as Memory Controller Hub, is one of the two chips in the core logic chipset architecture on a PC motherboard, which is connected directly to the CPU via the front-side bus (FSB) and is thus responsible for tasks that require the highest performance \cite{northbridge}. The southbridge is one of the two chips in the core logic chipset on a personal computer (PC) motherboard, which typically implements the slower capabilities of the motherboard in a northbridge/southbridge chipset computer architecture. It is not being directly connected to the CPU \cite{southbridge}.
+    \item How are the North and South bridges connected together?\\They are connected by an internal bus.
+    \item What is the BIOS?\\BIOS, an acronym for Basic Input/Output System, is firmware used to perform hardware initialization during the booting process (power-on startup), and to provide runtime services for operating systems and programs \cite{bios}.
+    \item Take out the CPU, rotate it and try to plug it back in a different position, is that working?\\No, that is not, because CPU and its slot have corresponding pin connections. Reverting CPU will cause pins unable to be connected properly.
+    \item Explain what overclocking is?\\Overclocking is the practice of increasing the clock rate of a computer to exceed that certified by the manufacturer, whose purpose is to increase the operating speed of a given component \cite{overclocking}.
+    \item What are pins on a PCI/PCI-e card and what are they used for?\\Pins on PCI/PCI-e card are edge connectors including power pins, SMBus and JTAG port pins, ground pin, card-to-host pin, host-to-card pin, sense pin, etc. They are used to connect with other electronic components, supplying power, or signaling from the card to the motherboard or from the motherboard to the card \cite{pcie}.
+    \item Before PCI-e became a common standard many graphics cards were using Accelerated Graphics Port (AGP), explain why.\\AGP was designed specifically for graphics cards, and its design was based on the PCI slot, allowing the graphics card to communicate directly to the CPU, supporting multiple speeds:- 1X, 2X, 4X or 8X, and higher transfer rates than leagcy PCI slots, and using a simpler handshaking process \cite{agppcie}, so is much better than PCI. However, PCI-e is even better than AGP in speed and bandwidth, so it replaces AGP.
+\end{itemize}
+\section{Git}
+\section{Command line interface}
+\subsection{Basic Unix commands}
+\subsection{Shell scripting}
+\subsection{Tasks}
+\begin{itemize}
+    \item Use the \texttt{mkdir}, \texttt{touch}, \texttt{mv}, \texttt{cp}, and \texttt{ls} commands to:
+    \begin{itemize}
+        \item Create a file named \texttt{test}.
+        \item Move \texttt{test} to \texttt{dir/test.txt}, where \texttt{dir} is a new directory.
+        \item Copy \texttt{dir/test.txt} to \texttt{dir/test\_copy.txt}.
+        \item List all the files contained in \texttt{dir}.
+    \end{itemize}
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{bash}
+        touch test
+        mkdir dir
+        mv test dir/test.txt
+        cp dir/test.txt dir/test_copy.txt
+        ls dir -a
+    \end{minted}
+    \item Use the \texttt{grep} command to:
+    \begin{itemize}
+        \item List all the files form \texttt{/etc} containing the pattern 127.0.0.1.
+        \item Only print the lines containing your username and root in the file \texttt{/etc/passwd} (only one grep should be used)
+    \end{itemize}
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{bash}
+        grep -rl "127.0.0.1" /etc
+        grep -rE "(yihua)|(root)" /etc/passwd
+    \end{minted}
+    \item Use the \texttt{find} command to:
+    \begin{itemize}
+        \item List all the files from \texttt{/etc} that have been accessed less than 24 hours ago.
+        \item List all the files from \texttt{/etc} whose name contains the pattern “netw”.
+    \end{itemize}
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{bash}
+        find /etc -atime -1
+        find /etc -name "*netw*"
+    \end{minted}
+    \item In the bash man-page read the part related to redirections. Explain the following operators $>$, $>>$, $<<<$, $>\&1$, and $2>\&1 >$. What is the use of the \texttt{tee} command.
+    \begin{itemize}
+        \item $>$: redirect the standard output into a file, overriding the file.
+        \item $>>$: redirect the standard output into a file, appending the file.
+        \item $<<<$: redirect strings on the right into the standard input on the left.
+        \item $>\&1$: duplicate the left file descriptor as a copy of the standard output (file descriptor 1).
+        \item $2>\&1 >$: redirect the standard output to the file only.
+        \item \texttt{tee}: read from standard input and write to standard output and files.  Copy standard input to each FILE, and also to standard output \cite{tee}.
+    \end{itemize}
+    \item Explain the behaviour of the \texttt{xargs} command and of the $|$ operator.\\\texttt{xargs} can build and execute command lines from standard input. Its behavior is to read items from the standard input, delimited by blanks (which can be protected with double or single quotes or a backslash) or newlines, and execute the command  (default is /bin/echo) one or more times with any initial-arguments followed by items read from standard input (Blank lines on the standard input are ignored.) \cite{xargs}. The $|$ operator indicates using pipes to deal with commands.
+    \item What are the \texttt{head} and \texttt{tail} commands? How to “live display” a file as new lines are appended?\\\texttt{head} is to output the first part of files (print the first 10 lines of each FILE to standard output default and can specify number of lines, etc.) \cite{head}. \texttt{tail} instead outputs the last part of file \cite{tail}. The way to "live display" a file as new lines are appended is \texttt{tail -f}.
+    \item How to monitor the system using \texttt{ps}, \texttt{top}, \texttt{free}, \texttt{vmstat}?
+    \begin{itemize}
+        \item \texttt{ps}: report a snapshot of the current processes. It displays information about a selection of the active processes. Example: to see every process on the system using standard syntax: \texttt{ps -e} \cite{ps}.
+        \item \texttt{top}: display Linux processes. It can display system summary information as well as a list of processes or threads currently being managed by the Linux kernel \cite{top}.
+        \item \texttt{free}: display amount of free and used memory in the system. \texttt{free} displays the total amount of free and used physical and swap memory in the system, as well as the buffers and caches used by the kernel \cite{free}.
+        \item \texttt{vmstat}: report virtual memory statistics. \texttt{vmstat} reports information about processes, memory, paging, block IO, traps, disks and cpu activity. Example: \texttt{vmstat -a} displays active and inactive memory, given a 2.5.41 kernel or better \cite{vmstat}.
+    \end{itemize}
+    \item What are the main differences between \texttt{sh}, \texttt{bash}, \texttt{csh}, and \texttt{zsh}?\\\texttt{sh} is the Unix-like original Bourne-derived shell, \texttt{bash} is the official shell of the GNU project and the default shell on most Linux distributions. \texttt{zsh} has almost every feature of \texttt{bash} and many more useful features \cite{sh}. \texttt{csh} is written in C.
+    \item What is the meaning of \$0, \$1,…, \$?, \$!?
+    \begin{itemize}
+        \item \$0: positional parameter, the first argument of the script.
+        \item \$1: positional parameter, the second argument of the script.
+        \item \$?: the exit status of the most recently executed foreground pipeline.
+        \item \$!: the process ID of the job most recently placed into the background \cite{specpar}.
+    \end{itemize}
+    \item What is the use of the \texttt{PS3} variable? Provide a short code example.\\It is used to prompt users by "select" inside the shell scripts \cite{ps3var}. Code example:
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{bash}
+        PS3="Select a role (1-4): "
+        select i in lacan foucault zizek exit
+        do
+        case $i in
+            lacan) echo "Jacques Lacan";;
+            foucault) echo "Michel Foucault";;
+            zizek) echo "Slavoj Žižek";;
+            exit) exit;;
+        esac
+        done
+    \end{minted}
+    \item What is the purpose of the \texttt{iconv} command, and why is it useful?\\It is used to convert text from one character encoding to another, i.e., read in text in one encoding and outputs the text in another encoding \cite{iconv}. It is useful because we usually need to do this conversion, and this tool can help us convert character encoding easily.
+    \item Given a variable \texttt{\$temp} what is the effect of \texttt{\$\{\#temp\}}, \texttt{\$\{temp\%\%word\}}, \texttt{\$\{temp/pattern/string\}}.\\
+    \begin{itemize}
+        \item \texttt{\$\{\#temp\}}: prints the number of characters in \texttt{\$temp}.
+        \item \texttt{\$\{temp\%\%word\}}: prints the content of \texttt{\$temp} without the longest matching pattern specified by \texttt{word}.
+        \item \texttt{\$\{temp/pattern/string\}}: prints the content of \texttt{\$temp} where \texttt{pattern} is replaced by \texttt{string}.
+    \end{itemize}
+    \item Search online (not on the man pages), how files are organised on a Unix like system. In particular explain what are the following directories used for.
+    \begin{itemize}
+        \item /: the root directory.
+        \item /bin: contains several useful commands that are of use to both the system administrator as well as non-privileged users.
+        \item /boot: contains everything required for the boot process except for configuration files not needed at boot time.
+        \item /etc: contains all system related configuration files in here or in its sub-directories.
+        \item /lib: contains kernel modules and those shared library images.
+        \item /media: contains mount points for removable media has now been created.
+        \item /mnt:  a generic mount point under which you mount your filesystems or devices.
+        \item /usr/bin: contains the vast majority of user binaries on your system.
+        \item /usr/share: contains 'shareable', architecture-independent files (docs, icons, fonts etc).
+        \item /usr/lib: contains user program libraries.
+        \item /usr/src: holds the Linux kernel sources, header-files and documentation.
+        \item /proc: a control and information centre for the kernel, a virtual filesystem.
+        \item /sys: a kernel interface containing configuration settings kernel-view information.
+        \item /srv: contains site-specific data which is served by this system.
+        \item /opt: all the software and add-on packages that are not part of the default installation.
+        \item /var: contains variable data like system logging files, mail and printer spool directories, and transient and temporary files.
+        \item /sbin: contains files used for system maintenance and/or administrative tasks.
+        \item /dev: the location of special or device files.
+        \item /vmlinuz: Linux kernel executable files.
+        \item /initrd.img: provides the capability to load a RAM disk by the boot loader \cite{linuxfilehier}.
+    \end{itemize}
+\end{itemize}
+\begin{center}
+    \textit{Now lets write some real scripts!}
+\end{center}
+Write a game where the computer selects a random number, prompts the user for a number, compares it to its number and displays “Larger” or “Smaller” to the user, until the player discovers the random number initially chosen by the computer.
+\inputminted[frame=single,bgcolor=bg,breaklines,linenos]{bash}{l1.sh}
+\printbibliography
+\end{document}

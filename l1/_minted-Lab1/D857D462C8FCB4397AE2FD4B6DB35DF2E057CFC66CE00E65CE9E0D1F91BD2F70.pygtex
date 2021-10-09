@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        touch \PYG{n+nb}{test}
+        mkdir dir
+        mv \PYG{n+nb}{test} dir/test.txt
+        cp dir/test.txt dir/test\PYGZus{}copy.txt
+        ls dir \PYGZhy{}a
+\end{Verbatim}

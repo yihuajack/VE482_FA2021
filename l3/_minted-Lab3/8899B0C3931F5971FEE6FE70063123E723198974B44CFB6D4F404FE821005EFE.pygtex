@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        vi /usr/src/build.sh  \PYG{c+c1}{\PYGZsh{} Add an empty comment in the beginning}
+\end{Verbatim}

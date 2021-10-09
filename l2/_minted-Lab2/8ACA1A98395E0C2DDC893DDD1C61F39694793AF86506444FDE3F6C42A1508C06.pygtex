@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        sudo apt update
+        sudo apt upgrade
+        sudo apt install openssh\PYGZhy{}client
+        ssh root@192.168.36.136  \PYG{c+c1}{\PYGZsh{} default port is 22}
+\end{Verbatim}

@@ -1,0 +1,28 @@
+[Lab 2] Fixes to certain Minix 3.2.1 issues
+Yiding Chang 常毅丁
+No unread replies.No replies.
+Dear all,
+
+We have found a solution to "Could not fetch [package name] " on Minix 3.2.1 when running "pkgin update". 
+
+The package source of Minix3.2.1, which begins with "ftp://", is already unavailable. But another, which begins with "http://", is still available. So we directly replace the original package with the http one. 
+
+In Minix, open the configuration file:
+
+vi /usr/pkg/etc/pkgin/repositories.conf
+Replace the line beginning with "ftp://xxxx", (Links to an external site.) to
+
+http://www.minix3.org/pkgsrc/packages/$osrelease/$arch/All
+(Note: You will be doing this with vi, which is not the best text editor in the world. Unfortunately it is your only choice right now. Search a bit on the internet about how it works. You can install nano or vim afterwards.)
+
+It should be working after you change this line. 
+
+If it is not, it means your virtual machine itself is not connecting to the Internet properly. Remember to let your virtual machine use NAT. For VMware Fusion users, go to "Virtual Machine"-"Settings"-"Network Adapter"-Enable "Share with my Mac". For VMware Workstation users, go to VM-Settings-Network Adapter. Select NAT. 
+
+Another common problem is that after you reboot, what you edited or configured before is lost. This is because you are still booting from the iso after you have already installed Minix. You need to switch to booting from your hard drive. For VMware Fusion users, go to "Virtual Machine"-"Settings"-"CD/DVD (IDE)"-Disable booting from CD/DVD. Then go to "Startup Disk" and restart from the disk. For VMware Workstation users, go to VM-Settings-CD/DVD(SATA). Select "Use physical drive". 
+
+Also, if you changed your Ethernet card to "8" using "netconf", please change it back to your default option.
+
+We are sorry that you did not have a chance to follow along in the lab, and you can find some notes about ssh in the files section. You can also find the recording in the Feishu group. We are extending the due of Lab 2 report by one day due to the confusion caused by Minix installation. 
+
+VE482 Teaching group

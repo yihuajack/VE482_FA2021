@@ -1,0 +1,486 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{northbridge}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=cW}{%
+         family={contributors},
+         familyi={c\bibinitperiod},
+         given={Wikipedia},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{cW1}
+    \strng{fullhash}{cW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{note}{Online: accessed 26 September 2021}
+    \field{title}{Northbridge (computing)}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Northbridge_(computing)
+    \endverb
+    \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+  \endentry
+
+  \entry{overclocking}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=cW}{%
+         family={contributors},
+         familyi={c\bibinitperiod},
+         given={Wikipedia},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{cW1}
+    \strng{fullhash}{cW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{note}{Online: accessed 26 September 2021}
+    \field{title}{Overclocking}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Overclocking
+    \endverb
+    \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+  \endentry
+
+  \entry{pcie}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=cW}{%
+         family={contributors},
+         familyi={c\bibinitperiod},
+         given={Wikipedia},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{cW1}
+    \strng{fullhash}{cW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{note}{Online: accessed 26 September 2021}
+    \field{title}{PCI Express}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/PCI_Express
+    \endverb
+    \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+  \endentry
+
+  \entry{southbridge}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=cW}{%
+         family={contributors},
+         familyi={c\bibinitperiod},
+         given={Wikipedia},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{cW1}
+    \strng{fullhash}{cW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{note}{Online: accessed 26 September 2021}
+    \field{title}{Southbridge (computing)}
+    \verb{url}
+    \verb https://en.wikipedia.org/wiki/Southbridge_(computing)
+    \endverb
+    \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+  \endentry
+
+  \entry{sh}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=sbeGS}{%
+         prefix={stop\bibnamedelima being},
+         prefixi={s\bibinitperiod\bibinitdelim b\bibinitperiod},
+         family={evil'},
+         familyi={e\bibinitperiod},
+         given={Gilles\bibnamedelima 'SO},
+         giveni={G\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{eGSsb1}
+    \strng{fullhash}{eGSsb1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{title}{What are the fundamental differences between the mainstream
+  *NIX shells? [closed]}
+    \verb{url}
+    \verb https://unix.stackexchange.com/a/3390/412789
+    \endverb
+    \warn{\item Invalid format of field 'date' \item Invalid format of field
+  'date'}
+  \endentry
+
+  \entry{agppcie}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=FT}{%
+         family={Fairy},
+         familyi={F\bibinitperiod},
+         given={Tech},
+         giveni={T\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FT1}
+    \strng{fullhash}{FT1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{title}{History Of Graphics card motherboard slots:- PCI VS AGP VS
+  PCI-Express VS Integrated graphics}
+    \verb{url}
+    \verb https://tech-fairy.com/history-of-graphics-card-motherboard-slots-pci
+    \verb -vs-agp-vs-pci-express-vs-integrated-graphics/
+    \endverb
+    \field{day}{18}
+    \field{month}{05}
+    \field{year}{2020}
+  \endentry
+
+  \entry{pcicard}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=FA}{%
+         family={Frank},
+         familyi={F\bibinitperiod},
+         given={Andreas},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Wikimedia Commons}%
+    }
+    \strng{namehash}{FA1}
+    \strng{fullhash}{FA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Online: accessed 26 September 2021}
+    \field{title}{USB2-PCI Card}
+    \verb{url}
+    \verb https://commons.wikimedia.org/wiki/File:USB2-PCI_Card.jpg
+    \endverb
+    \list{location}{1}{%
+      {Germany}%
+    }
+    \field{day}{23}
+    \field{month}{02}
+    \field{year}{2005}
+  \endentry
+
+  \entry{tee}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{17.1 tee: Redirect output to multiple files or processes}
+    \verb{url}
+    \verb https://www.gnu.org/software/coreutils/manual/html_node/tee-invocatio
+    \verb n.html
+    \endverb
+    \field{year}{2019}
+  \endentry
+
+  \entry{specpar}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{3.4.2 Special Parameters}
+    \verb{url}
+    \verb https://www.gnu.org/software/bash/manual/html_node/Special-Parameters
+    \verb .html
+    \endverb
+    \field{year}{2021}
+  \endentry
+
+  \entry{head}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{5.1 head: Output the first part of files}
+    \verb{url}
+    \verb https://www.gnu.org/software/coreutils/manual/html_node/head-invocati
+    \verb on.html
+    \endverb
+    \field{month}{09}
+    \field{year}{2019}
+  \endentry
+
+  \entry{tail}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{5.2 tail: Output the last part of files}
+    \verb{url}
+    \verb https://www.gnu.org/software/coreutils/manual/html_node/tail-invocati
+    \verb on.html
+    \endverb
+    \field{month}{09}
+    \field{year}{2019}
+  \endentry
+
+  \entry{iconv}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{iconv(1) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man1/iconv.1.html
+    \endverb
+    \field{day}{06}
+    \field{month}{03}
+    \field{year}{2019}
+  \endentry
+
+  \entry{ps}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{ps(1) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man1/ps.1.html
+    \endverb
+    \field{day}{08}
+    \field{month}{08}
+    \field{year}{2018}
+  \endentry
+
+  \entry{free}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{top(1) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man1/free.1.html
+    \endverb
+    \field{day}{31}
+    \field{month}{05}
+    \field{year}{2018}
+  \endentry
+
+  \entry{top}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{top(1) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man1/top.1.html
+    \endverb
+    \field{month}{10}
+    \field{year}{2019}
+  \endentry
+
+  \entry{vmstat}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{vmstat(8) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man8/vmstat.8.html
+    \endverb
+    \field{month}{09}
+    \field{year}{2011}
+  \endentry
+
+  \entry{xargs}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={GNU},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{xargs(1) — Linux manual page}
+    \verb{url}
+    \verb https://man7.org/linux/man-pages/man1/xargs.1.html
+    \endverb
+    \field{year}{2019}
+  \endentry
+
+  \entry{ps3var}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=NR}{%
+         family={NATARAJAN},
+         familyi={N\bibinitperiod},
+         given={RAMESH},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NR1}
+    \strng{fullhash}{NR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{title}{Bash Shell: Take Control of PS1, PS2, PS3, PS4 and
+  PROMPT\_COMMAND}
+    \verb{url}
+    \verb https://www.thegeekstuff.com/2008/09/bash-shell-take-control-of-ps1-p
+    \verb s2-ps3-ps4-and-prompt_command/
+    \endverb
+    \field{day}{04}
+    \field{month}{09}
+    \field{year}{2008}
+  \endentry
+
+  \entry{linuxfilehier}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=NB}{%
+         family={Nguyen},
+         familyi={N\bibinitperiod},
+         given={Binh},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NB1}
+    \strng{fullhash}{NB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{title}{Linux Filesystem Hierarchy}
+    \verb{url}
+    \verb https://tldp.org/LDP/Linux-Filesystem-Hierarchy/html/
+    \endverb
+    \field{version}{0.65}
+    \field{day}{30}
+    \field{month}{07}
+    \field{year}{2004}
+  \endentry
+
+  \entry{bios}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=P}{%
+         family={PCGuide},
+         familyi={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{P1}
+    \strng{fullhash}{P1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{Ref — System BIOS}
+    \verb{url}
+    \verb http://www.pcguide.com/ref/mbsys/bios/index.htm
+    \endverb
+    \field{day}{06}
+    \field{month}{12}
+    \field{year}{2014}
+  \endentry
+\enddatalist
+\endinput

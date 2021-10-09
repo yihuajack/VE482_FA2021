@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        \PYG{n+nv}{PS3}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}Select a role (1\PYGZhy{}4): \PYGZdq{}}
+        \PYG{k}{select} i \PYG{k}{in} lacan foucault zizek \PYG{n+nb}{exit}
+        \PYG{k}{do}
+        \PYG{k}{case} \PYG{n+nv}{\PYGZdl{}i} \PYG{k}{in}
+            lacan\PYG{o}{)} \PYG{n+nb}{echo} \PYG{l+s+s2}{\PYGZdq{}Jacques Lacan\PYGZdq{}}\PYG{p}{;;}
+            foucault\PYG{o}{)} \PYG{n+nb}{echo} \PYG{l+s+s2}{\PYGZdq{}Michel Foucault\PYGZdq{}}\PYG{p}{;;}
+            zizek\PYG{o}{)} \PYG{n+nb}{echo} \PYG{l+s+s2}{\PYGZdq{}Slavoj Žižek\PYGZdq{}}\PYG{p}{;;}
+            \PYG{n+nb}{exit}\PYG{o}{)} exit\PYG{p}{;;}
+        \PYG{k}{esac}
+        \PYG{k}{done}
+\end{Verbatim}

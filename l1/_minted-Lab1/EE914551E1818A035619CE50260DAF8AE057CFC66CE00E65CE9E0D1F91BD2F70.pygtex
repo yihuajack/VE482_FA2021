@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        grep \PYGZhy{}rl \PYG{l+s+s2}{\PYGZdq{}127.0.0.1\PYGZdq{}} /etc
+        grep \PYGZhy{}rE \PYG{l+s+s2}{\PYGZdq{}(yihua)|(root)\PYGZdq{}} /etc/passwd
+\end{Verbatim}
