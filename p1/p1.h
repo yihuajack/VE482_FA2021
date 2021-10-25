@@ -33,6 +33,7 @@ char *p_path;  // previous path
 char **cmds;  // list of commands
 int sig_stat;  // 0 for normal, 1 for parent, 2 for child.
 int **pipe_fds;  // list of pipes
+struct ll_jobs *ll_bjobs;  // It needs to be freed, so is defined globally.
 struct sigaction info, newhandler;  // current action and previous action
 struct wd c_wd, *p_wd;  // current working directory and previous working directory
 unsigned int cmdbodies[PIPE_MAX_NUM] = {0};  // indices of command bodies excluding arguments
@@ -45,21 +46,39 @@ struct wd{
     unsigned int path_len;
 };
 
+// The number of background jobs is not defined in p1_specifications, and is also not specified by Bash:
+// https://unix.stackexchange.com/questions/272545/is-there-a-limit-to-processes-i-can-run-in-the-background
+// so we have to use a linked list to store background jobs.
+struct ll_jobs {
+    bool stat;
+    char* p_cmdln;
+    pid_t pid;
+    size_t jid;  // Job ID
+    struct ll_jobs* next;
+};
+
+bool strcrpbrk_check(const char *s1, const char *s2, const char *s3);
 bool parse(char *cmdln);
 bool quote_check(char *ln);
+char *strcrpbrk(const char *s1, const char *s2);
 char *strcpbrk(const char *s1, const char *s2);
 char *strqtok(char *parsedln, const bool p_quote[], size_t *p_tok);
 char *redirection_parse(char *cmdln);
 int pending_input();
+struct ll_jobs *ll_jobs_getlast(struct ll_jobs *l_jobs);
+struct ll_jobs *ll_jobs_init(char *p_cmdln, size_t n_job);
 // The way C copy structs is, e.g. if struct wd c_wd, p_wd; p_wd = c_wd;
 // p_wd and c_wd share the same memory of path which is manually allocated and freed.
 // Therefore, we do not need another struct and pass struct from and to pwd() function,
 // instead, we use a struct pointer *p_wd and pass struct pointer from and to pwd() function.
 struct wd *pwd();
 void cd(unsigned int idx);
+void execute(bool f_bjob);
 void free_mem();
-void execute();
 void int_handler();
+void jobs();
+void ll_jobs_delete(struct ll_jobs *job);
+void ll_jobs_insert(struct ll_jobs *l_jobs, struct ll_jobs *job);
 void piping();
 void preexit();
 void unpiping();

@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+(gdb) p \PYGZdl{}pc
+(gdb) x 0x5e4c5d00
+(gdb) bt
+(gdb) reverse\PYGZhy{}stepi
+(gdb) bt
+(gdb) disas
+(gdb) print \PYGZdl{}sp
+(gdb) print *(long **) 0x7fffffffdc98
+(gdb) watch *(long **) 0x7fffffffdc98
+(gdb) reverse\PYGZhy{}continue
+\end{Verbatim}

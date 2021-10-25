@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+        \PYG{n+nb}{cd} /usr/src
+        make build \PYG{o}{\PYGZam{}\PYGZam{}} reboot  \PYG{c+c1}{\PYGZsh{} remember to reboot}
+\end{Verbatim}

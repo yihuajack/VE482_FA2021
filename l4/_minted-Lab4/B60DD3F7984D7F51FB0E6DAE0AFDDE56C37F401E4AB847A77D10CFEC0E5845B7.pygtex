@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+gcc \PYGZhy{}std\PYG{o}{=}gnu11 \PYGZhy{}O2 \PYGZhy{}Wall \PYGZhy{}Wextra \PYGZhy{}Werror \PYGZhy{}pedantic \PYGZhy{}Wno\PYGZhy{}unused\PYGZhy{}result \PYGZhy{}Wconversion \PYGZhy{}fno\PYGZhy{}omit\PYGZhy{}frame\PYGZhy{}pointer \PYGZhy{}fsanitize\PYG{o}{=}undefined \PYGZhy{}fsanitize\PYG{o}{=}address \PYGZhy{}o mumsh p1.c \PYGZhy{}g
+\end{Verbatim}

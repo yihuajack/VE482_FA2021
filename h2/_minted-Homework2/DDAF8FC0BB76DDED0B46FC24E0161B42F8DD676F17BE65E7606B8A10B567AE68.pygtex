@@ -1,0 +1,24 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{c+cm}{/*===========================================================================*}
+\PYG{c+cm}{     *				procnum\PYGZus{}dmp  				     *}
+\PYG{c+cm}{     *===========================================================================*/}
+    \PYG{k+kt}{void} \PYG{n+nf}{procnum\PYGZus{}dmp}\PYG{p}{()}
+    \PYG{p}{\PYGZob{}}
+      \PYG{k}{register} \PYG{k}{struct} \PYG{n+nc}{proc} \PYG{o}{*}\PYG{n}{rp}\PYG{p}{;}
+      \PYG{k+kt}{int} \PYG{n}{r}\PYG{p}{,}\PYG{n}{n}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{;}
+
+      \PYG{c+cm}{/* First obtain a fresh copy of the current process table. */}
+      \PYG{k}{if} \PYG{p}{((}\PYG{n}{r} \PYG{o}{=} \PYG{n}{sys\PYGZus{}getproctab}\PYG{p}{(}\PYG{n}{proc}\PYG{p}{))} \PYG{o}{!=} \PYG{n}{OK}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+        \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}IS: warning: couldn\PYGZsq{}t get copy of process table: \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{r}\PYG{p}{);}
+        \PYG{k}{return}\PYG{p}{;}
+      \PYG{p}{\PYGZcb{}}
+
+      \PYG{k}{for} \PYG{p}{(}\PYG{n}{rp}\PYG{o}{=}\PYG{n}{BEG\PYGZus{}PROC\PYGZus{}ADDR}\PYG{p}{;} \PYG{n}{rp}\PYG{o}{\PYGZlt{}}\PYG{n}{END\PYGZus{}PROC\PYGZus{}ADDR}\PYG{p}{;} \PYG{n}{rp}\PYG{o}{++}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+          \PYG{k}{if} \PYG{p}{(}\PYG{n}{isemptyp}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{))}
+            \PYG{k}{continue}\PYG{p}{;}
+          \PYG{n}{n}\PYG{o}{++}\PYG{p}{;}
+      \PYG{p}{\PYGZcb{}}
+
+      \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Number of currently running processes is \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{n}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+\end{Verbatim}

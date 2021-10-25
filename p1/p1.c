@@ -18,6 +18,8 @@ void preexit() {
         free(c_wd.path);
     if (p_path)
         free(p_path);
+    if (ll_bjobs)
+        ll_jobs_delete(ll_bjobs);
 }
 
 char *redirection_parse(char *cmdln) {
@@ -67,7 +69,7 @@ char *strqtok(char *parsedln, const bool quoted[], size_t *p_tok) {
     size_t i, j = 0;
     size_t delim_offset = strspn(parsedln, TOK_DELIM);  // Discard initial token delimiters
     parsedln += delim_offset;
-    *p_tok += delim_offset;
+    *p_tok += delim_offset;  // not p_tok
     delim_offset = strcspn(parsedln, TOK_DELIM);  // Scan until the next token delimiter
     size_t p_newtok = *p_tok + delim_offset;
     while (delim_offset && quoted[p_newtok]) {
@@ -82,7 +84,8 @@ char *strqtok(char *parsedln, const bool quoted[], size_t *p_tok) {
         }
     }
     token[j] = '\0';
-    *p_tok = p_newtok + 1;
+    // This is redundant, but delimiters may happen anywhere: "cat 1.txt   ".
+    *p_tok = p_newtok + strspn(parsedln + delim_offset, TOK_DELIM);
     /* if cmdln contains only TOK_DELIM, token == '' ('\0'), (token) is still true, and '' will be a cmdbody:
      * ": command not found", and we cannot set token = NULL before it is freed, so we should process in main().  */
     return token;
@@ -142,8 +145,12 @@ bool parse(char *cmdln) {
     /* if (*token == '\0') free(token);  if-else does not need token = NULL, no need to set n_cmd = 0.
      * The reason why we do not handle TOK_DELIM only cmdln here is we cannot differentiate " " and " abc"  */
     while (token) {
-        if (io_errno)
+        if (io_errno) {
+            // Task 12 6. Syntax Error "echo abc > > > >" ERROR: LeakSanitizer: detected memory leaks
+            // SUMMARY: AddressSanitizer: 2 byte(s) leaked in 1 allocation(s).
+            free(token);
             break;
+        }
         /* The additional check is used to deal with quoted ">". "<", "|", ">>".
         * Remember the ending quote is seen as quoted,
         * think about why we can handle both > and ">" by only 1 additional condition by this.  */
@@ -159,9 +166,15 @@ bool parse(char *cmdln) {
             switch (token[0]) {
                 case '>':
                     io_errno = 3;
-                    break;case '<':io_errno = 4;
-                    break;case '|':io_errno = 5;
-                    break;default:strcpy(ofn, token);
+                    break;
+                case '<':
+                    io_errno = 4;
+                    break;
+                case '|':
+                    io_errno = 5;
+                    break;
+                default:
+                    strcpy(ofn, token);
                     break;
             }
         } else if (token[0] == '<' && !quoted[*p_token - 2]) {
@@ -341,8 +354,24 @@ void cd(unsigned int idx) {
     }
 }
 
-void execute() {
-    unsigned int i, background = 0;
+void jobs() {
+    struct ll_jobs *it1 = ll_bjobs, *it2 = ll_bjobs;
+    while (it1) {
+        it1->stat = !waitpid(it1->pid, NULL, WNOHANG);
+        it1 = it1->next;
+    }
+    while (it2) {
+        if (it2->stat)
+            printf("[%zu] running %s", it2->jid, it2->p_cmdln);
+        else
+            printf("[%zu] done %s", it2->jid, it2->p_cmdln);
+        fflush(stdout);
+        it2 = it2->next;
+    }
+}
+
+void execute(bool f_bjob) {
+    unsigned int i;
     /* Note: do not dynamically allocate memory for pid_list like this:
     pid_t *pid_list = (pid_t *)malloc(sizeof(pid_t) * n_cmd);
     otherwise displaying "mumsh $ 123" that is related to waitpid(),
@@ -356,6 +385,8 @@ void execute() {
             exit(0);
         } else if (!strcmp(cmds[cmdbodies[i]], "cd")) {
             cd(i);
+        } else if (!strcmp(cmds[cmdbodies[i]], "jobs")) {
+            jobs();
         } else {
             pid_t pid = fork();
             pid_list[i] = pid;
@@ -447,12 +478,13 @@ void execute() {
         }
     }
     unpiping();
-    if (background) {
-        waitpid(-1, NULL, WNOHANG);
+    if (f_bjob) {
+        ll_jobs_getlast(ll_bjobs)->pid = pid_list[n_cmd - 1];
+        for (i = 0; i < n_cmd; ++i)
+            waitpid(pid_list[i], NULL, WNOHANG);
     } else {
         // while (waitpid(-1, NULL, WUNTRACED) != -1) {}
-        // This method cannot handle multiple piped commands,
-        // so we have to store a list of pid.
+        // This method cannot handle multiple piped commands, so we have to store a list of pid.
         for (i = 0; i < n_cmd; ++i)
             waitpid(pid_list[i], NULL, WUNTRACED);
     }
@@ -502,7 +534,18 @@ char *strcpbrk(const char *s1, const char *s2) {
             return (char *)--s1;
     return 0;
 }
-/* Another implementation of strcpbrk():
+/* Linux lib style implementation:
+ * char *strpbrk(const char *cs, const char *ct) {
+ *     const char *sc1, *sc2;
+ *     for (sc1 = cs; *sc1 != '\0'; ++sc1) {
+ * 	       for (sc2 = ct; *sc2 != '\0'; ++sc2) {
+ * 	          if (*sc1 != *sc2)
+ * 	   	          return (char *)sc1;
+ * 	       }
+ *     }
+ * 	   return NULL;
+ * }
+ * Another implementation of strcpbrk():
  * char *strcpbrk(const char *s, const char *b) {
  *     s += strspn(s, b);
  *     return *s ? (char *)s : 0;
@@ -511,12 +554,106 @@ char *strcpbrk(const char *s1, const char *s2) {
  * strcpbrk1: 1700 1100 900 900 1000
  * strcpbrk2: 2000 1200 1000 1100 1100  */
 
+// https://github.com/torvalds/linux/blob/master/lib/string.c
+// We want to strcpbrk(strrchr(cmd_sln, '><|') + cmd_sln, TOK_DELIM)
+char *strcrpbrk(const char *s1, const char *s2) {
+    const char *sc, *last = NULL;
+    for (int i = (int)strlen(s1) - 1; i >= 0; --i) {
+        last = s1 + i;
+        for (sc = s2; *sc != '\0'; ++sc) {
+            if (s1[i] == *sc) {
+                last = NULL;
+                break;
+            }
+        }
+        if (last)
+            return (char *)last;
+    }
+    return (char *)last;
+}
+
+bool strcrpbrk_check(const char *s1, const char *s2, const char *s3) {
+    char *strcrpbrk_ret = strcrpbrk(s1, s2);
+    if (strcrpbrk_ret) {
+        while (*s3) {
+            if (*s3++ == *strcrpbrk_ret) {  // Wanna check some syntax errors in advance?
+                char *last = strcrpbrk_ret;
+                if (last == s1)
+                    return true;  // Milestone 3 Case #8 and #10; delimters before or after ><| also OK.
+                while (last > s1) {
+                    --last;
+                    bool f_delim = 0;
+                    while (*s2) {
+                        if (*last == *s2++) {
+                            f_delim = 1;
+                            break;
+                        }
+                    }
+                    if (!f_delim)
+                        // "Hint: “»” does not need to be supported."
+                        return !(*last == '>'  // && !(strcrpbrk_ret - 1 >= s1 && *(strcrpbrk_ret - 1) == '>'))
+                                || *last == '<' || *last == '|');
+                }
+            }
+        }
+    }
+    return false;
+}
+
+struct ll_jobs *ll_jobs_init(char *p_cmdln, size_t n_job) {
+    struct ll_jobs* job = (struct ll_jobs *) malloc(sizeof(struct ll_jobs));
+    job->stat = 1;
+    // If you have time to kill you can refactor the code so that job->p_cmdln = p_cmdln while memory-safe.
+    job->p_cmdln = (char *) malloc(sizeof(char) * CMD_MAX_LEN);
+    strcpy(job->p_cmdln, p_cmdln);
+    job->pid = -1;
+    job->jid = n_job;
+    job->next = NULL;
+    return job;
+}
+
+void ll_jobs_delete(struct ll_jobs *job) {
+    if (job) {
+        ll_jobs_delete(job->next);
+        if (job->p_cmdln) {
+            free(job->p_cmdln);
+            job->p_cmdln = NULL;
+            /* You can memset job->p_cmdln while initializing to achieve the same effects,
+             * but I guess to set it to NULL in the end may better.
+             * I did recognize this issue before, but I did not have time to refactor my code.  */
+        }
+        free(job);
+    }
+}
+
+void ll_jobs_insert(struct ll_jobs *l_jobs, struct ll_jobs *job) {
+    if (l_jobs) {
+        struct ll_jobs *last = ll_jobs_getlast(l_jobs);
+        last->next = job;  // last is never NULL in this case
+    } else {
+        ll_jobs_delete(job);
+    }
+}
+
+struct ll_jobs *ll_jobs_getlast(struct ll_jobs *l_jobs) {
+    if (l_jobs) {
+        struct ll_jobs *it = l_jobs;
+        while (it->next) {
+            it = it->next;
+        }
+        return it;
+    } else {
+        return NULL;
+    }
+}
+
 int main() {
     newhandler.sa_handler = &int_handler;
+    size_t n_bjob = 0;  // number of background jobs
     while (1) {
         sigaction(SIGINT, &newhandler, &info);  // signal(SIGINT, int_handler);
         sig_stat = 0;
-        int f_quoted = 0;
+        bool f_quoted = 0;
         char *cmd_ln = (char *) malloc(sizeof(char) * CMD_MAX_LEN);
         memset(cmd_ln, 0, CMD_MAX_LEN);
         char *cmd_sln = (char *) malloc(sizeof(char) * CMD_MAX_LEN);
@@ -530,30 +667,50 @@ int main() {
         while (1) {  // loop for one command line
             if (fgets(cmd_sln, CMD_MAX_LEN, stdin)) {
                 if (quote_check(cmd_sln))  // we must do quote check here even it is partially repeated
-                    f_quoted = !f_quoted;
+                    f_quoted = !f_quoted;  // Since we take '\n' the same as ' ' and '\t', no need to replace '\n'
                 strcat(cmd_ln, cmd_sln);  // No matter what happened, we always concatenate them together first.
-                if (f_quoted) {  // middle quoted lines (may separate), should not replace '\n' with ' '
+                // middle quoted lines (may separate), should not replace '\n' with ' '
+                if (f_quoted || strcrpbrk_check(cmd_sln, TOK_DELIM, "><|")) {
                     printf("> ");
                     fflush(stdout);
-                    continue;
                 } else {  // first or last line, no need to replace '\n' with ' '
                     /* Process empty lines or cmdln with TOK_DELIM only
                      * It should never be parsed because once it is parsed, it is missing program.
                      * Last line cannot be empty or TOK_DELIM only, so only first line.
                      * In this stage, cmd_ln has been completed, and we should always break.  */
                     free(cmd_sln);  // after parsing there will be interrupts, so we have to free in advance.
-                    if (!strcpbrk(cmd_ln, TOK_DELIM) || sig_stat == 1) {
+                    if (sig_stat == 1 || !strcpbrk(cmd_ln, TOK_DELIM)) {
                         free(cmd_ln);
-                    } else if (parse(cmd_ln)) {  // first line with commands or last line
-                        piping();  // The first possible preexit() here
-                        execute();  // may exit(0) here
-                    } else { // If !parse(cmd_ln), there is io_error, break to handle it.
-                        free(cmd_ln);
+                    } else {
+                        char *c_bjob = strcrpbrk(cmd_ln, TOK_DELIM);
+                        bool f_bjob = 0;
+                        if (*c_bjob == '&') {
+                            ++n_bjob;  // "The job ID starts from 1."
+                            if (n_bjob == 1) {
+                                ll_bjobs = ll_jobs_init(cmd_ln, 1);
+                                printf("[%zu] %s", ll_bjobs->jid, ll_bjobs->p_cmdln);
+                            } else {
+                                // We must put this in block, otherwise "error: expected expression".
+                                struct ll_jobs *new_bjob = ll_jobs_init(cmd_ln, n_bjob);
+                                ll_jobs_insert(ll_bjobs, new_bjob);
+                                printf("[%zu] %s", new_bjob->jid, new_bjob->p_cmdln);
+                            }
+                            fflush(stdout);
+                            *c_bjob = '\0';
+                            f_bjob = 1;
+                        }
+                        if (parse(cmd_ln)) {  // first line with commands or last line
+                            piping();  // The first possible preexit() here
+                            execute(f_bjob);  // may exit(0) here
+                            // You may expect a tricky way like execute(*c_job == '&'),
+                            // but remember c_bjob is in cmd_ln and cmd_ln already freed in parse().
+                        }
+                        // else { free(cmd_ln); } // If !parse(cmd_ln), there is io_error, break to handle it.
+                        // but there is nothing to handle - cmd_ln already freed in redirection_parse().
                     }
-                    break;
+                    break;  // break the loop for one command line
                 }
-            } else {
-                // If fgets() fails, free memory, check errors, and exit.
+            } else {  // If fgets() fails, free memory, check errors, and exit.
                 free(cmd_sln);
                 free(cmd_ln);
                 /* stackoverflow.com/questions/45261521/is-it-possible-to-distinguish-the-error-returned-by-fgets
@@ -562,14 +719,16 @@ int main() {
                 if (feof(stdin)) {
                     printf("exit\n");
                     fflush(stdout);
+                    exit(0);
                 } else if (ferror(stdin)) {
                     // Here must be else if, otherwise, Ctrl+C Ctrl+D will cause infinite loop of printf("exit\n")
-                    if (errno == EINTR)
-                        continue;  // continue "mumsh $ "
-                    else
+                    if (errno == EINTR) {
+                        break;  // continue "mumsh $ "
+                    } else {
                         perror("error: fgets failed\n");
+                        exit(0);
+                    }
                 }
-                exit(0);
             }
         }
     }

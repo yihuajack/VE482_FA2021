@@ -1,0 +1,56 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,caption,float,graphicx,minted,xcolor}
+% \usepackage[utf8]{inputenc}
+% \usepackage[english]{babel}
+% \usepackage[backend=bibtex]{biblatex}
+% \addbibresource{Lab3.bib}
+\captionsetup[figure]{labelsep=period}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\renewcommand\thesection{\arabic{section}}
+\usemintedstyle{emacs}
+\begin{document}
+\begin{center}
+    \huge
+    \textbf{VE482\\Introduction to Operating Systems\\}
+    \Large
+    \vspace{15pt}
+    \uppercase{\textbf{Homeork 3}}\\
+    \large
+    \vspace{5pt}\today\\
+    \vspace{5pt}
+    Yihua Liu 518021910998
+    \vspace{5pt}
+    \rule[-5pt]{.97\linewidth}{0.05em}
+\end{center}
+\section*{Ex. 1 — General questions}
+\begin{itemize}
+    \item Why would a thread voluntarily release the CPU?\\
+    Threads share the same address space and can access the same data. Programmers can use \texttt{thread\_yield()} to release the CPU when a thread is no longer needed in order to save resources for the application.
+    \item What is the biggest advantage/disadvantage of user space threads?\\
+    The biggest advantage of user space threads is that they can be scheduled independently from kernel traps so that less context switch would be done, which improves the performance. The biggest disadvantage of user space threads is that if one thread fails, then the whole process would be interrupted.
+    \item If a multithreaded process forks, a problem occurs if the child gets copies of all the parent’s threads. Suppose that one of the original threads was waiting for keyboard input. Now two threads are waiting for keyboard input, one in each process. Does this problem ever occur in single-threaded processes?\\
+    No, it does not, because for single-threaded processes, if they are waiting for keyboard input, they cannot be forked.
+    \item Many UNIX system calls have no Win32 API equivalents. For each such call, what are the consequences when porting a program from a UNIX system to a Windows system?\\
+    Some UNIX system calls will be replaced by platform-agnostic APIs, so the performance of the programs will be declined.
+\end{itemize}
+\section*{Ex. 2 — C programming}
+The goal of this exercise is to improve the programming skills and get more familiar with pointers and function pointers.
+\begin{itemize}
+    \item Implement a linked list structure containing two pointers of type \texttt{char} and \texttt{void}. It should be possible to at least add elements to the list.
+    \item Knowing that the \texttt{void} pointer in the structure could contain some \texttt{char*}, \texttt{int}, or \texttt{double}, write a search function for this linked list.
+    \item The linked list will store elements read from an ASCII file where each line is in the format \texttt{somestring=somedata}. The type of the data is defined in the filename; for instance a file containing unsorted integers will be named \texttt{rand\_int.txt}. Implement the necessary functions to read and write such files.
+    \item Use a function pointers to compare and sort the elements from the structure with respect to the data field. Implement the following sorting orders: increasing, decreasing, and random. The filename is \texttt{sortingtype\_dataype.txt}, where \texttt{sortingtype} is \texttt{rand}, \texttt{inc}, or \texttt{dec}.
+    \item Write a function to test the implementation.
+\end{itemize}
+See attached *.c and *.h files.
+\section*{Ex. 3 — Research on POSIX}
+Write a few paragraphs about the POSIX standards. What are they, why do they exist, what kind of things are included in the norms.
+
+POSIX standards, the Portable Operating System Interface standards are defined by IEEE. More specifically, they are designated as IEEE 1003 and ISO/IEC 9945 currently.
+
+They exist because IEEE wants to maintain the compatibility between operating systems. It basically starts from Unix, or more specifically, Unix System V.
+
+They include system-level and user-level APIs (application programming interfaces), command line shells, and utility interfaces (such as \texttt{awk}, \texttt{echo}, \texttt{ed}, etc.). For program level services, they include basic I/O: file, terminal, and network.
+
+According to POSIX documentation, POSIX has "System Interfaces, and Commands and Utilities (which include POSIX.1, extensions for POSIX.1, Real-time Services, Threads Interface, Real-time Extensions, Security Interface, Network File Access and Network Process-to-Process Communications, User Portability Extensions, Corrections and Extensions, Protection and Control Utilities and Batch System Utilities" and " A test suite for POSIX accompanies the standard: VSX-PCTS or the VSX POSIX Conformance Test Suite".
+\end{document}

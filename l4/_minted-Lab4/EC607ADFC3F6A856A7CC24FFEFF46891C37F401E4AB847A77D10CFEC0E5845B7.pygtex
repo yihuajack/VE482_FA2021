@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+sudo apt install sqlite3
+sqlite3 l4.db
+\end{Verbatim}

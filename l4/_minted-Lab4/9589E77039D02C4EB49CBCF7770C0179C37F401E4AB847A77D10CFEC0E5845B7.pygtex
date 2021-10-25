@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+git log \PYGZhy{}\PYGZhy{}pretty\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZpc{}H,\PYGZpc{}aN,\PYGZpc{}aI,\PYGZpc{}s\PYGZdq{}} \PYGZgt{} db.csv
+\end{Verbatim}

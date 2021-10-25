@@ -1,0 +1,15 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{CREATE} \PYG{k}{TABLE} \PYG{n}{db}
+\PYG{p}{(}
+    \PYG{n}{hash} \PYG{n+nb}{TEXT} \PYG{k}{NOT} \PYG{k}{NULL}\PYG{p}{,}
+    \PYG{n}{name} \PYG{n+nb}{TEXT} \PYG{k}{NOT} \PYG{k}{NULL}\PYG{p}{,}
+    \PYG{k}{comment} \PYG{n+nb}{TEXT} \PYG{k}{NOT} \PYG{k}{NULL}
+\PYG{p}{);}
+\PYG{k}{CREATE} \PYG{k}{TABLE} \PYG{n}{time\PYGZus{}stamp}
+\PYG{p}{(}
+    \PYG{n}{hash} \PYG{n+nb}{TEXT} \PYG{k}{NOT} \PYG{k}{NULL}\PYG{p}{,}
+    \PYG{n}{name} \PYG{n+nb}{TEXT} \PYG{k}{NOT} \PYG{k}{NULL}\PYG{p}{,}
+    \PYG{n}{dates} \PYG{n+nb}{TEXT}\PYG{p}{,}
+    \PYG{n}{tstamp} \PYG{n+nb}{INT}
+\PYG{p}{);}
+\end{Verbatim}

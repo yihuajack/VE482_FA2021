@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT} \PYG{n+nb}{DATE}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{),} \PYG{k}{count}\PYG{p}{(}\PYG{n+nb}{DATE}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{))} \PYG{k}{FROM} \PYG{n}{time\PYGZus{}stamp} \PYG{k}{GROUP} \PYG{k}{BY} \PYG{n+nb}{DATE}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{)} \PYG{k}{ORDER} \PYG{k}{BY} \PYG{k}{count}\PYG{p}{(}\PYG{n+nb}{DATE}\PYG{p}{(}\PYG{n}{dates}\PYG{p}{))} \PYG{k}{DESC} \PYG{k}{LIMIT} \PYG{l+m+mi}{5}\PYG{p}{;}
+\end{Verbatim}

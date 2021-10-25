@@ -1,0 +1,18 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+(gdb) file mumsh
+(gdb) break p1.c:17
+(gdb) break strqtok
+(gdb) run
+mumsh \PYGZdl{} echo 123
+(gdb) next
+(gdb) step
+(gdb) watch delim\PYGZus{}offset
+(gdb) print delim\PYGZus{}offset
+(gdb)
+(gdb) continue
+(gdb) continue
+(gdb) continue
+mumsh \PYGZdl{} exit
+(gdb) continue
+(gdb) continue
+\end{Verbatim}
