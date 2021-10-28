@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{add\PYGZus{}executable}\PYG{p}{(}\PYG{l+s}{cli} \PYG{l+s}{cli.c} \PYG{l+s}{interface.c} \PYG{l+s}{h3.c} \PYG{l+s}{forward\PYGZus{}list.c} \PYG{l+s}{algorithm.c}\PYG{p}{)}
+\PYG{n+nb}{add\PYGZus{}executable}\PYG{p}{(}\PYG{l+s}{menui} \PYG{l+s}{menui.c} \PYG{l+s}{interface.c} \PYG{l+s}{h3.c} \PYG{l+s}{forward\PYGZus{}list.c} \PYG{l+s}{algorithm.c}\PYG{p}{)}
+\end{Verbatim}

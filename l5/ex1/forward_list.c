@@ -1,33 +1,5 @@
 #include "forward_list.h"
 
-void append_list(struct node** head_ref, const char *str, void *data) {
-    struct node *new_node = (struct node*) malloc(sizeof(struct node));
-    struct node *last = *head_ref;
-    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
-    strcpy(new_node->str, str);
-    new_node->data = data;
-    new_node->next = NULL;
-    if (!*head_ref) {
-        *head_ref = new_node;
-    } else {
-        while (last->next)
-            last = last->next;
-        last->next = new_node;
-    }
-}
-
-void append_node(struct node** prev_ref, const char *str, void *data) {
-    struct node *new_node = (struct node*) malloc(sizeof(struct node));
-    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
-    strcpy(new_node->str, str);
-    new_node->data = data;
-    new_node->next = NULL;
-    if (!*prev_ref)
-        *prev_ref = new_node;
-    else
-        (*prev_ref)->next = new_node;
-}
-
 struct node *add_list(struct node *list1, struct node *list2) {
     struct node *res = NULL, *temp = NULL, *prev = NULL;
     int carry = 0, sum;
@@ -62,6 +34,50 @@ struct node *add_list(struct node *list1, struct node *list2) {
     return res;
 }
 
+void append_fwdlist(struct fwd_list *list, const char *str, void *data) {
+    struct node *new_node = (struct node*) malloc(sizeof(struct node));
+    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+    strcpy(new_node->str, str);
+    new_node->data = data;
+    new_node->next = NULL;
+    if (!list->head) {
+        list->head = new_node;
+        list->tail = list->head;
+    } else {
+        list->tail->next = new_node;
+        list->tail = list->tail->next;
+        // list->tail->next = NULL;  new_node->next == NULL
+    }
+}
+
+void append_list(struct node** head_ref, const char *str, void *data) {
+    struct node *new_node = (struct node*) malloc(sizeof(struct node));
+    struct node *last = *head_ref;
+    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+    strcpy(new_node->str, str);
+    new_node->data = data;
+    new_node->next = NULL;
+    if (!*head_ref) {
+        *head_ref = new_node;
+    } else {
+        while (last->next)
+            last = last->next;
+        last->next = new_node;
+    }
+}
+
+void append_node(struct node** prev_ref, const char *str, void *data) {
+    struct node *new_node = (struct node*) malloc(sizeof(struct node));
+    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
+    strcpy(new_node->str, str);
+    new_node->data = data;
+    new_node->next = NULL;
+    if (!*prev_ref)
+        *prev_ref = new_node;
+    else
+        (*prev_ref)->next = new_node;
+}
+
 void *at(struct node *head, size_t pos) {
     struct node* current = head;
     size_t i = 0;
@@ -86,6 +102,28 @@ void clear(struct node **head_ref) {
         current = next;
     }
     *head_ref = NULL;
+}
+
+void clear_list(struct fwd_list *list) {
+    struct node *current = list->head, *next;
+    if (list->type == 2) {
+        while (current) {
+            next = current->next;
+            free(current->str);
+            free(current->data);  // Assume listDst's memory is allocated by malloc()
+            free(current);
+            current = next;
+        }
+    } else {
+        while (current) {
+            next = current->next;
+            free(current->str);
+            free(current);
+            current = next;
+        }
+    }
+    list->head = NULL;
+    list->tail = NULL;
 }
 
 size_t count(struct node* head, void *data) {
@@ -125,8 +163,6 @@ void erase_at(struct node **head_ref, size_t pos) {
 void insert_after(struct node *prev_node, char *str, void *data) {
     if (prev_node) {
         struct node *new_node = (struct node *) malloc(sizeof(struct node));
-        // new_node->str = (char *) malloc(sizeof(char) * strlen(str));
-        // strcpy(new_node->str, str);
         new_node->str = str;
         new_node->data = data;
         new_node->next = prev_node->next;
@@ -144,11 +180,15 @@ size_t length(struct node *head) {
     return len;
 }
 
-/* void list_initializer(struct list **list) {
-    *list = malloc(sizeof(struct list));
-    (*list)->first = NULL;
-    (*list)->length = 0;
-}  */
+size_t length_list(const struct fwd_list *list) {
+    size_t len = 0;
+    struct node *current = list->head;
+    while (current) {
+        len++;
+        current = current->next;
+    }
+    return len;
+}
 
 bool loop(struct node *head) {
     struct node *slow = head, *fast = head;
@@ -185,6 +225,40 @@ void merge_sort_list(struct node **head_ref) {
         merge_sort_list(&subl1);
         merge_sort_list(&subl2);
         *head_ref = merge_list_recursive(subl1, subl2);
+    }
+}
+
+void msort_fwdlist(const struct fwd_list *listSrc, struct fwd_list *listDst, int (*const cmp)(const void *, const void *)) {
+    size_t len = length_list(listSrc);
+    if (len) {
+        size_t i;
+        struct node *l_temp = (struct node *) malloc(sizeof(struct node) * len);
+        struct node *temp = listSrc->head;
+        for (i = 0; i < len; i++) {
+            memcpy(l_temp + i, temp, sizeof(struct node));
+            temp = temp->next;
+        }
+        msort(l_temp, len, sizeof(struct node), cmp);
+        if (listDst->head)
+            clear_list(listDst);
+        struct node *new_node = (struct node*) malloc(sizeof(struct node));
+        new_node->str = (char *) malloc(sizeof(char) * (strlen(l_temp[0].str)) + 1);
+        strcpy(new_node->str, l_temp[0].str);
+        new_node->data = l_temp[i].data;
+        new_node->next = NULL;
+        listDst->head = new_node;
+        listDst->tail = listDst->head;
+        for (i = 1; i < len; i++) {
+            // temp->str = l_temp[i].str;  Dangling pointer
+            struct node *new_node = (struct node*) malloc(sizeof(struct node));
+            new_node->str = (char *) malloc(sizeof(char) * (strlen(l_temp[i].str)) + 1);
+            strcpy(new_node->str, l_temp[i].str);
+            new_node->data = l_temp[i].data;
+            new_node->next = NULL;
+            listDst->tail->next = new_node;
+            listDst->tail = listDst->tail->next;
+        }
+        free(l_temp);
     }
 }
 

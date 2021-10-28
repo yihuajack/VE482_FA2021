@@ -1,0 +1,121 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{slib2}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=CE}{%
+         family={Caoili},
+         familyi={C\bibinitperiod},
+         given={Erika},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CE1}
+    \strng{fullhash}{CE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{Linux Basics: Static Libraries vs. Dynamic Libraries}
+    \verb{url}
+    \verb https://medium.com/swlh/linux-basics-static-libraries-vs-dynamic-libr
+    \verb aries-a7bcf8157779
+    \endverb
+    \field{day}{17}
+    \field{month}{12}
+    \field{year}{2019}
+  \endentry
+
+  \entry{libapi}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=HR}{%
+         family={Harvey},
+         familyi={H\bibinitperiod},
+         given={Robert},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HR1}
+    \strng{fullhash}{HR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{What is the difference between an API and a library?
+  [closed]}
+    \verb{url}
+    \verb https://softwareengineering.stackexchange.com/a/362696/380110
+    \endverb
+    \field{day}{19}
+    \field{month}{12}
+    \field{year}{2017}
+  \endentry
+
+  \entry{slib1}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=KS}{%
+         family={Kuredjian},
+         familyi={K\bibinitperiod},
+         given={Stuart},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KS1}
+    \strng{fullhash}{KS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{Static Libraries vs. Dynamic Libraries}
+    \verb{url}
+    \verb https://medium.com/@StueyGK/static-libraries-vs-dynamic-libraries-af7
+    \verb 8f0b5f1e4
+    \endverb
+    \field{day}{15}
+    \field{month}{05}
+    \field{year}{2017}
+  \endentry
+
+  \entry{ccompile}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=VD}{%
+         family={Vasquez},
+         familyi={V\bibinitperiod},
+         given={Daniela},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{VD1}
+    \strng{fullhash}{VD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{V}
+    \field{sortinithash}{V}
+    \field{title}{The Four Stages of Compilation (C programming and gcc
+  compiler)}
+    \verb{url}
+    \verb https://medium.com/@danielavasquez_77768/the-four-stages-of-compilati
+    \verb on-c-programming-and-gcc-compiler-9faadf2e273a
+    \endverb
+    \field{day}{08}
+    \field{month}{02}
+    \field{year}{2019}
+  \endentry
+\enddatalist
+\endinput

@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{add\PYGZus{}executable}\PYG{p}{(}\PYG{l+s}{menui\PYGZus{}shared} \PYG{l+s}{menui.c} \PYG{l+s}{interface.c}\PYG{p}{)}
+\PYG{n+nb}{target\PYGZus{}link\PYGZus{}libraries}\PYG{p}{(}\PYG{l+s}{menui\PYGZus{}shared} \PYG{l+s}{logic\PYGZus{}shared} \PYG{l+s}{kernel\PYGZus{}shared}\PYG{p}{)}
+\end{Verbatim}

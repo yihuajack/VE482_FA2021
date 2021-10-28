@@ -57,17 +57,19 @@ static inline int string_inc(const void *a, const void *b) {
     return strcmp((char *) (((struct node *)a)->data), (char *) (((struct node *)b)->data));
 }
 
-int (*const cmp[3][3])(const void *, const void *) = {
-    {any_rand, string_inc, string_dec},
-    {any_rand, int_inc, int_dec},
-    {any_rand, double_inc, double_dec}
-};
+// Do not define a global variable in the header file.
+// Instead, declare it in the header file, and define it in the source file.
+// Otherwise, "error: 'extern' variable has an initializer [-Werror,-Wextern-initializer]"
+// or "multiple definition of `cmp'".
+// "extern" is necessary, otherwise "warning: size of symbol `cmp' changed".
+// https://stackoverflow.com/questions/14526153/multiple-definition-of-a-global-variable
+extern int (*const cmp[3][3])(const void *, const void *);
 
 void fprint_forward(FILE *fp, struct node *head, int datatype);
 int get_datatype(char *ifn);
 int get_sortingtype(char *sortingtype);
-// void insert_after_list(struct list *l, char *str, void *data);
 void read_file(struct node **head_ref, const char *ifn, int datatype);
+void h3(char *ifn, int datatype, int sortingtype);
 void write_file(struct node **head_ref, int datatype, int sortingtype);
 
 #endif

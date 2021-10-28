@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{add\PYGZus{}executable}\PYG{p}{(}\PYG{l+s}{cli\PYGZus{}static} \PYG{l+s}{cli.c} \PYG{l+s}{interface.c}\PYG{p}{)}
+\PYG{n+nb}{target\PYGZus{}link\PYGZus{}libraries}\PYG{p}{(}\PYG{l+s}{cli\PYGZus{}static} \PYG{l+s}{logic\PYGZus{}static} \PYG{l+s}{kernel\PYGZus{}static}\PYG{p}{)}
+\end{Verbatim}

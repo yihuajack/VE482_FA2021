@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{add\PYGZus{}library}\PYG{p}{(}\PYG{l+s}{kernel\PYGZus{}shared} \PYG{l+s}{SHARED} \PYG{l+s}{forward\PYGZus{}list.c} \PYG{l+s}{algorithm.c}\PYG{p}{)}
+\PYG{n+nb}{add\PYGZus{}library}\PYG{p}{(}\PYG{l+s}{logic\PYGZus{}shared} \PYG{l+s}{SHARED} \PYG{l+s}{h3.c}\PYG{p}{)}
+\PYG{n+nb}{target\PYGZus{}link\PYGZus{}libraries}\PYG{p}{(}\PYG{l+s}{logic\PYGZus{}shared} \PYG{l+s}{kernel\PYGZus{}shared}\PYG{p}{)}
+\end{Verbatim}

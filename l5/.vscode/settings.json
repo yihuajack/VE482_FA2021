@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "*.cls": "latex",
+        ".spacemacs": "lisp",
+        "*.toml": "toml",
+        "*.mkdn": "markdown",
+        "*.scm": "lisp",
+        "*.m": "matlab",
+        "lab5_dlist.h": "c",
+        "h3.h": "c",
+        "interface.h": "c"
+    }
+}

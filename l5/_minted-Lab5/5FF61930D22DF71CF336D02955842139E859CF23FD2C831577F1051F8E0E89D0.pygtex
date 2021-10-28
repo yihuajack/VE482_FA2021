@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nb}{add\PYGZus{}library}\PYG{p}{(}\PYG{l+s}{kernel\PYGZus{}static} \PYG{l+s}{STATIC} \PYG{l+s}{forward\PYGZus{}list.c} \PYG{l+s}{algorithm.c}\PYG{p}{)}
+\PYG{n+nb}{add\PYGZus{}library}\PYG{p}{(}\PYG{l+s}{logic\PYGZus{}static} \PYG{l+s}{STATIC} \PYG{l+s}{h3.c}\PYG{p}{)}
+\end{Verbatim}

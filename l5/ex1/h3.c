@@ -1,5 +1,11 @@
 #include "h3.h"
 
+int (*const cmp[3][3])(const void *, const void *) = {
+    {any_rand, string_inc, string_dec},
+    {any_rand, int_inc, int_dec},
+    {any_rand, double_inc, double_dec}
+};
+
 int get_datatype(char *ifn) {
     if (!strcmp(ifn, "rand_char*.txt")) {
         return 0;
@@ -24,38 +30,14 @@ int get_sortingtype(char *sortingtype) {
     }
 }
 
-/* void insert_after_list(struct list *l, char *str, void *data) {
-     * if (list) {
-     *     struct node *new_node = (struct node *) malloc(sizeof(struct node));
-     *     new_node->str = str;
-     *     new_node->data = data;
-     *     new_node->next = list->next;
-     *     list->next = new_node;
-     * } else {
-     *     list = (struct node *) malloc(sizeof(struct node));
-     *     list->str = str;
-     *     list->data = data;
-     *     list->next = NULL;
-     * }
-     * return list;
-    struct node *new_node = (struct node *) malloc(sizeof(struct node));
-    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
-    strcpy(new_node->str, str);
-    new_node->data = data;
-    new_node->next = (l->first) ? l->first : NULL;
-    // new_node->next = l->first->next;
-    l->first = new_node;
-    l->length++;
-}  */
-
 void read_file(struct node **head_ref, const char *ifn, const int datatype) {
-    char line[1024];
+    char line[MAX_LINE_LEN];
     FILE *ifile = fopen(ifn, "r");
     printf("reading %s\n", ifn);
     struct node *prev_node = NULL;
     char *str, *raw_data;
     if (datatype == 0) {
-        if (fgets(line, 1024, ifile)) {
+        if (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(char) * (strlen(raw_data) + 1));
@@ -63,7 +45,7 @@ void read_file(struct node **head_ref, const char *ifn, const int datatype) {
             append_node(head_ref, str, data);
             prev_node = *head_ref;
         }
-        while (fgets(line, 1024, ifile)) {
+        while (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(char) * (strlen(raw_data) + 1));
@@ -72,7 +54,7 @@ void read_file(struct node **head_ref, const char *ifn, const int datatype) {
             prev_node = prev_node->next;
         }
     } else if (datatype == 1) {
-        if (fgets(line, 1024, ifile)) {
+        if (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(int));
@@ -80,7 +62,7 @@ void read_file(struct node **head_ref, const char *ifn, const int datatype) {
             append_node(head_ref, str, data);
             prev_node = *head_ref;
         }
-        while (fgets(line, 1024, ifile)) {
+        while (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(int));
@@ -89,7 +71,7 @@ void read_file(struct node **head_ref, const char *ifn, const int datatype) {
             prev_node = prev_node->next;
         }
     } else if (datatype == 2) {
-        if (fgets(line, 1024, ifile)) {
+        if (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(double));
@@ -97,7 +79,7 @@ void read_file(struct node **head_ref, const char *ifn, const int datatype) {
             append_node(head_ref, str, data);
             prev_node = *head_ref;
         }
-        while (fgets(line, 1024, ifile)) {
+        while (fgets(line, MAX_LINE_LEN, ifile)) {
             str = strtok(line, "=");
             raw_data = strtok(NULL, "\n");
             void *data = malloc(sizeof(double));
@@ -130,12 +112,12 @@ void fprint_forward(FILE *fp, struct node *head, int datatype) {
 }
 
 void write_file(struct node **head_ref, int datatype, int sortingtype) {
-    char ofn[15];
+    char ofn[16];
     const char *sorting_name[3] = {"rand", "inc", "dec"};
     // `typename` is not a keyword of C, but is a keyword of C++:
     // https://en.cppreference.com/w/cpp/keyword
     // Using `g++` will force an error: "expected unqualified-id before ‘typename’".
-    const char *type_name[3] = {"string", "int", "double"};
+    const char *type_name[3] = {"char*", "int", "double"};
     sprintf(ofn, "%s_%s.txt", sorting_name[sortingtype], type_name[datatype]);
     printf("writing %s\n", ofn);
     FILE *ofile = fopen(ofn, "w");
@@ -143,16 +125,11 @@ void write_file(struct node **head_ref, int datatype, int sortingtype) {
     fclose(ofile);
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 3)
-        return 0;
-    int datatype = get_datatype(argv[1]), sortingtype = get_sortingtype(argv[2]);
-    // struct list *l = read_file(argv[1], datatype);
+void h3(char *ifn, int datatype, int sortingtype) {
     struct node *head_node = NULL;
-    read_file(&head_node, argv[1], datatype);
+    read_file(&head_node, ifn, datatype);
     printf("sorting elements\n");
-    sort_list(&head_node, cmp[datatype][sortingtype]);
+    msort_list(&head_node, cmp[datatype][sortingtype]);
     write_file(&head_node, datatype, sortingtype);
     clear(&head_node);
-    return 0;
 }

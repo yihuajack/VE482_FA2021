@@ -1,0 +1,98 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,caption,float,graphicx,hyperref,indentfirst,minted,tabularx,xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{Lab5.bib}
+% \captionsetup[figure]{labelsep=period}
+% \captionsetup[table]{labelsep=period}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\renewcommand\thesection{\arabic{section}}
+\usemintedstyle{emacs}
+\begin{document}
+\begin{center}
+    \huge
+    \textbf{VE482\\Introduction to Operating Systems\\}
+    \Large
+    \vspace{15pt}
+    \uppercase{\textbf{Lab 5}}\\
+    \large
+    \vspace{5pt}\today\\
+    \vspace{5pt}
+    Yihua Liu 518021910998
+    \vspace{5pt}
+    \rule[-5pt]{.97\linewidth}{0.05em}
+\end{center}
+\section{Layer programming}
+\begin{itemize}
+    \item The program can be divided into three layers, what are they?\\
+    Kernel layer, logic layer, and interface layer.
+    \item Split the program into files according to the defined layers.\\
+    \begin{itemize}
+        \item Kernel layer: \texttt{algorithm.h}, \texttt{algorithm.c}, \texttt{forward\_list.h}, \texttt{forward\_list.c}
+        \item Logic layer: \texttt{h3.h}, \texttt{h3.c}
+        \item Interface layer: \texttt{interface.h}, \texttt{interface.c}, \texttt{cli.c}, \texttt{menui.c}
+    \end{itemize}
+    \item Create the appropriate corresponding header files.
+    \item If necessary rewrite functions such that no call is emitted from lower level functions to upper level functions.
+    \item The initial program implements a command line interface, write a “Menu interface” which (i) welcomes the user, (ii) prompts him for some task to perform, and (iii) runs it. When a task is completed the user should (i) be informed if it was successful and then (ii) be displayed the menu. From the menu he should be able to exit the program.
+    \item Write two \texttt{main} functions, one which will “dispatch” the work to another function which will run the command line user interface and a second one which will “dispatch” the work to the Menu user interface.
+\end{itemize}
+\section{Libraries}
+In order to understand libraries we first recall a few basics on compilation.
+\begin{itemize}
+    \item What are the four stages performed when compiling a file?\\
+    Preprocessing, compilation, assembler, and linker.
+    \item Briefly describe each of them \cite{ccompile}.\\
+    \begin{itemize}
+        \item Preprocessing: removes comments from source code, expands macros, and expands header files.
+        \item Compilation: takes in temporary files *.i, translates into assembly language, and checks syntax.
+        \item Assembler: tasks *.s code and translates into low-level machine code.
+        \item Linker: takes in *.o file, links functions, and generates executable files.
+    \end{itemize}
+\end{itemize}
+A library is a collection of functions, data types, constants, etc. which are put together. When compiling, the machine code corresponding to those elements is generated. Two types of libraries exist: static and dynamic. Explain the difference between the two.
+
+Static libraries are locked into a program at compile time while dynamic (shared) libraries exist as separate files outside of the executable file, creating a combined work at runtime \cite{slib2} \cite{slib1}.
+
+Generating a static library is a simple process: collect several functions and pack them into an \texttt{ar} archive.
+\begin{itemize}
+    \item Search more details on how to proceed.
+    \item Create two static libraries, one for each of the two lowest layers in the previous program.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{cmake}
+add_library(kernel_static STATIC forward_list.c algorithm.c)
+add_library(logic_static STATIC h3.c)
+    \end{minted}
+    \item Compile the command line version of the program using these two static libraries.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{cmake}
+add_executable(cli_static cli.c interface.c)
+target_link_libraries(cli_static logic_static kernel_static)
+    \end{minted}
+\end{itemize}
+Generating shared, or dynamic, libraries is a slightly more complex process. Since the library is to be shared among various programs none of them can rely on a predefined location where to find the functions in the memory. Therefore as the library has to store its information at different memory addresses it is compiled into a Position-Independent Code (IPC). This is achieved by running \texttt{gcc} with the flag \texttt{-fpic}. Then in order to effectively create the dynamic library, \texttt{gcc} has to be re-run with the flag \texttt{-shared}.
+\begin{itemize}
+    \item Generate two dynamic libraries, one for each of the two lowest layers in the previous program.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{cmake}
+add_library(kernel_shared SHARED forward_list.c algorithm.c)
+add_library(logic_shared SHARED h3.c)
+target_link_libraries(logic_shared kernel_shared)
+    \end{minted}
+    \item Compile the whole program
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{cmake}
+add_executable(cli cli.c interface.c h3.c forward_list.c algorithm.c)
+add_executable(menui menui.c interface.c h3.c forward_list.c algorithm.c)
+    \end{minted}
+    \item Compile the Menu version of the program using these two dynamic libraries.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{cmake}
+add_executable(menui_shared menui.c interface.c)
+target_link_libraries(menui_shared logic_shared kernel_shared)
+    \end{minted}
+\end{itemize}
+A few extra remarks:
+\begin{itemize}
+    \item What is the difference between a library and the API.
+    Library is a collection of specific functions for some features, while API is used to interact with other applications, comprising all the definitions of publicly-declared classes, methods, and properties \cite{libapi}.
+    \item Implement the API below for the two libraries.
+\end{itemize}
+\printbibliography
+\end{document}

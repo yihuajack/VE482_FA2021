@@ -1,33 +1,5 @@
 #include "forward_list.h"
 
-void append_list(struct node** head_ref, char *str, void *data) {
-    struct node* new_node = (struct node*) malloc(sizeof(struct node));
-    struct node *last = *head_ref;
-    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
-    strcpy(new_node->str, str);
-    new_node->data = data;
-    new_node->next = NULL;
-    if (!*head_ref) {
-        *head_ref = new_node;
-    } else {
-        while (last->next)
-            last = last->next;
-        last->next = new_node;
-    }
-}
-
-void append_node(struct node** prev_ref, char *str, void *data) {
-    struct node* new_node = (struct node*) malloc(sizeof(struct node));
-    new_node->str = (char *) malloc(sizeof(char) * (strlen(str) + 1));
-    strcpy(new_node->str, str);
-    new_node->data = data;
-    new_node->next = NULL;
-    if (!*prev_ref)
-        *prev_ref = new_node;
-    else
-        (*prev_ref)->next = new_node;
-}
-
 struct node *add_list(struct node *list1, struct node *list2) {
     struct node *res = NULL, *temp = NULL, *prev = NULL;
     int carry = 0, sum;
@@ -81,7 +53,9 @@ void clear(struct node **head_ref) {
     while (current) {
         next = current->next;
         free(current->str);
+        current->str = NULL;
         free(current->data);
+        current->data = NULL;
         free(current);
         current = next;
     }
@@ -144,11 +118,11 @@ size_t length(struct node *head) {
     return len;
 }
 
-/* void list_initializer(struct list **list) {
+void list_initializer(struct list **list) {
     *list = malloc(sizeof(struct list));
     (*list)->first = NULL;
     (*list)->length = 0;
-}  */
+}
 
 bool loop(struct node *head) {
     struct node *slow = head, *fast = head;
@@ -292,29 +266,23 @@ bool search_recursive(struct node *head, void *data) {
         return search(head->next, data);
 }
 
-/* https://stackoverflow.com/a/6105590/13087142
- * The canonical solution is to make (i.e. allocate memory for and fill) an array of pointers to the elements of
- * the original array, and qsort this new array, using an extra level of indirection and falling back to
- * comparing pointer values when the things they point to are equal. This approach has the potential side benefit that
- * you don't modify the original array at all - but if you want the original array to be sorted in the end,
- * you'll have to permute it to match the order in the array of pointers after qsort returns.  */
-void sort_list(struct node **head_ref, int (*const cmp)(const void *, const void *)) {
-    size_t len = length(*head_ref);
+struct list *sort_list(struct node *list, int (*const cmp)(const void *, const void *)) {
+    size_t len = length(list);
     if (len) {
-        size_t i;
-        struct node *l_temp = malloc(sizeof(struct node) * len);
-        struct node *temp = *head_ref;
-        for (i = 0; i < len; i++) {
-            memcpy(l_temp + i, temp, sizeof(struct node));
+        /* struct node *new_list = malloc(sizeof(struct node) * len);
+        struct node *temp = list;
+        for (size_t i = 0; i < len; i++) {
+            memcpy(new_list + i, temp, sizeof(struct node));
+            temp = temp->next;
+        }  */
+        qsort(list, len, sizeof(struct node), cmp);
+        /* temp = list;
+        for (size_t i = 0; i < len; i++) {
+            temp->str = new_list[i].str;
+            temp->data = new_list[i].data;
             temp = temp->next;
         }
-        qsort(l_temp, len, sizeof(struct node), cmp);
-        temp = *head_ref;
-        for (i = 0; i < len; i++) {
-            temp->str = l_temp[i].str;
-            temp->data = l_temp[i].data;
-            temp = temp->next;
-        }
-        free(l_temp);
+        free(new_list);  */
     }
+    return list;
 }
