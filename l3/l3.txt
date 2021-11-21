@@ -1,0 +1,13 @@
+[L3] Some Advice
+Yuchi Chen 陈禹池
+No unread replies.No replies.
+Dear students,
+
+The grade of Lab 3 is released. Here's some advice:
+
+Attach your command/code in a separate file. Or at least use a listing package in your LaTeX document. The worst thing to do is to paste your command into LaTeX directly. Since there are escape characters in LaTeX, your command can be totally wrong. In future labs, if your command becomes useless because of such copy-and-paste behavior, we will no longer grade it.
+In the rsync part, you should always use rsync to do a copy, rather than cp.
+ifconfig default shows "UP" IPs. However, you should state this point. You can also use "ifconfig -a" and try to find those IPs with a "UP" flag. Another trick is to directly pass the name of an active hardware to ifconfig. If you didn't do anything and retrieve IPs from ifconfig directly, 5 points are deducted.
+We find many of you have exactly the same command for some questions. Please always pay attention to the Honor Code and if your work always shows similarities with other's, you may be accused to the Honor Council.
+Best,
+VE482 Teaching Group

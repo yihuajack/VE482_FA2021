@@ -1,0 +1,62 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/* See if this process is immediately schedulable.}
+\PYG{c+cm}{ * In that case, set its privileges now and allow it to run.}
+\PYG{c+cm}{ * Only kernel tasks and the root system process get to run immediately.}
+\PYG{c+cm}{ * All the other system processes are inhibited from running by the}
+\PYG{c+cm}{ * RTS\PYGZus{}NO\PYGZus{}PRIV flag. They can only be scheduled once the root system}
+\PYG{c+cm}{ * process has set their privileges.}
+\PYG{c+cm}{ */}
+ \PYG{n}{proc\PYGZus{}nr} \PYG{o}{=} \PYG{n}{proc\PYGZus{}nr}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{);}
+\PYG{n}{schedulable\PYGZus{}proc} \PYG{o}{=} \PYG{p}{(}\PYG{n}{iskerneln}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr}\PYG{p}{)} \PYG{o}{||} \PYG{n}{isrootsysn}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr}\PYG{p}{)} \PYG{o}{||}
+	\PYG{n}{proc\PYGZus{}nr} \PYG{o}{==} \PYG{n}{VM\PYGZus{}PROC\PYGZus{}NR}\PYG{p}{);}
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{schedulable\PYGZus{}proc}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+    \PYG{c+cm}{/* Assign privilege structure. Force a static privilege id. */}
+        \PYG{p}{(}\PYG{k+kt}{void}\PYG{p}{)} \PYG{n}{get\PYGZus{}priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{,} \PYG{n}{static\PYGZus{}priv\PYGZus{}id}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr}\PYG{p}{));}
+        \PYG{c+cm}{/* Priviliges for kernel tasks. */}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr} \PYG{o}{==} \PYG{n}{VM\PYGZus{}PROC\PYGZus{}NR}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}flags} \PYG{o}{=} \PYG{n}{VM\PYGZus{}F}\PYG{p}{;}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}trap\PYGZus{}mask} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}T}\PYG{p}{;}
+	\PYG{n}{ipc\PYGZus{}to\PYGZus{}m} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}M}\PYG{p}{;}
+	\PYG{n}{kcalls} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}KC}\PYG{p}{;}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}sig\PYGZus{}mgr} \PYG{o}{=} \PYG{n}{SELF}\PYG{p}{;}
+            \PYG{n}{rp}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{p\PYGZus{}priority} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}Q}\PYG{p}{;}
+            \PYG{n}{rp}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{p\PYGZus{}quantum\PYGZus{}size\PYGZus{}ms} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}QT}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{iskerneln}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+            \PYG{c+cm}{/* Privilege flags. */}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}flags} \PYG{o}{=} \PYG{p}{(}\PYG{n}{proc\PYGZus{}nr} \PYG{o}{==} \PYG{n}{IDLE} \PYG{o}{?} \PYG{n+nl}{IDL\PYGZus{}F} \PYG{p}{:} \PYG{n}{TSK\PYGZus{}F}\PYG{p}{);}
+            \PYG{c+cm}{/* Allowed traps. */}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}trap\PYGZus{}mask} \PYG{o}{=} \PYG{p}{(}\PYG{n}{proc\PYGZus{}nr} \PYG{o}{==} \PYG{n}{CLOCK}
+                \PYG{o}{||} \PYG{n}{proc\PYGZus{}nr} \PYG{o}{==} \PYG{n}{SYSTEM}  \PYG{o}{?} \PYG{n+nl}{CSK\PYGZus{}T} \PYG{p}{:} \PYG{n}{TSK\PYGZus{}T}\PYG{p}{);}
+            \PYG{n}{ipc\PYGZus{}to\PYGZus{}m} \PYG{o}{=} \PYG{n}{TSK\PYGZus{}M}\PYG{p}{;}                  \PYG{c+cm}{/* allowed targets */}
+            \PYG{n}{kcalls} \PYG{o}{=} \PYG{n}{TSK\PYGZus{}KC}\PYG{p}{;}                   \PYG{c+cm}{/* allowed kernel calls */}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{c+cm}{/* Priviliges for the root system process. */}
+        \PYG{k}{else} \PYG{p}{\PYGZob{}}
+    	\PYG{n}{assert}\PYG{p}{(}\PYG{n}{isrootsysn}\PYG{p}{(}\PYG{n}{proc\PYGZus{}nr}\PYG{p}{));}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}flags}\PYG{o}{=} \PYG{n}{RSYS\PYGZus{}F}\PYG{p}{;}        \PYG{c+cm}{/* privilege flags */}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}trap\PYGZus{}mask}\PYG{o}{=} \PYG{n}{SRV\PYGZus{}T}\PYG{p}{;}     \PYG{c+cm}{/* allowed traps */}
+            \PYG{n}{ipc\PYGZus{}to\PYGZus{}m} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}M}\PYG{p}{;}                 \PYG{c+cm}{/* allowed targets */}
+            \PYG{n}{kcalls} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}KC}\PYG{p}{;}                  \PYG{c+cm}{/* allowed kernel calls */}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}sig\PYGZus{}mgr} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}SM}\PYG{p}{;}     \PYG{c+cm}{/* signal manager */}
+            \PYG{n}{rp}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{p\PYGZus{}priority} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}Q}\PYG{p}{;}	          \PYG{c+cm}{/* priority queue */}
+            \PYG{n}{rp}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{p\PYGZus{}quantum\PYGZus{}size\PYGZus{}ms} \PYG{o}{=} \PYG{n}{SRV\PYGZus{}QT}\PYG{p}{;}   \PYG{c+cm}{/* quantum size */}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{c+cm}{/* Fill in target mask. */}
+        \PYG{n}{memset}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{map}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{k}{sizeof}\PYG{p}{(}\PYG{n}{map}\PYG{p}{));}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{ipc\PYGZus{}to\PYGZus{}m} \PYG{o}{==} \PYG{n}{ALL\PYGZus{}M}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{k}{for}\PYG{p}{(}\PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}} \PYG{n}{NR\PYGZus{}SYS\PYGZus{}PROCS}\PYG{p}{;} \PYG{n}{j}\PYG{o}{++}\PYG{p}{)}
+                \PYG{n}{set\PYGZus{}sys\PYGZus{}bit}\PYG{p}{(}\PYG{n}{map}\PYG{p}{,} \PYG{n}{j}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{n}{fill\PYGZus{}sendto\PYGZus{}mask}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{map}\PYG{p}{);}
+
+        \PYG{c+cm}{/* Fill in kernel call mask. */}
+        \PYG{k}{for}\PYG{p}{(}\PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}} \PYG{n}{SYS\PYGZus{}CALL\PYGZus{}MASK\PYGZus{}SIZE}\PYG{p}{;} \PYG{n}{j}\PYG{o}{++}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{n}{priv}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{)}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{s\PYGZus{}k\PYGZus{}call\PYGZus{}mask}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{n}{kcalls} \PYG{o}{==} \PYG{n}{NO\PYGZus{}C} \PYG{o}{?} \PYG{l+m+mi}{0} \PYG{o}{:} \PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{l+m+mi}{0}\PYG{p}{));}
+        \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\PYG{k}{else} \PYG{p}{\PYGZob{}}
+    \PYG{c+cm}{/* Don\PYGZsq{}t let the process run for now. */}
+        \PYG{n}{RTS\PYGZus{}SET}\PYG{p}{(}\PYG{n}{rp}\PYG{p}{,} \PYG{n}{RTS\PYGZus{}NO\PYGZus{}PRIV} \PYG{o}{|} \PYG{n}{RTS\PYGZus{}NO\PYGZus{}QUANTUM}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

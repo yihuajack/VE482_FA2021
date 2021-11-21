@@ -1,0 +1,352 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,caption,float,graphicx,xcolor}
+\usepackage{minted}
+% \usepackage[utf8]{inputenc}
+% \usepackage[english]{babel}
+% \usepackage[backend=bibtex]{biblatex}
+% \addbibresource{Lab3.bib}
+\captionsetup[figure]{labelsep=period}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\renewcommand\thesection{\arabic{section}}
+\usemintedstyle{emacs}
+\begin{document}
+\begin{center}
+    \huge
+    \textbf{VE482\\Introduction to Operating Systems\\}
+    \Large
+    \vspace{15pt}
+    \uppercase{\textbf{Homework 5}}\\
+    \large
+    \vspace{5pt}\today\\
+    \vspace{5pt}
+    Yihua Liu 518021910998
+    \vspace{5pt}
+    \rule[-5pt]{.97\linewidth}{0.05em}
+\end{center}
+\section*{Ex. 1 — Simple questions}
+\begin{enumerate}
+    \item A system has two processes and three identical resources. Each process needs a maximum of two resources. Can a deadlock occur? Explain.\\
+    No, a deadlock cannot occur. Since the resources are identical, if each process is allocated with 1 resource, then one process can be allocated with another 1 resource; if process 1 is allocated with 1 resource and process 2 is allocated with 2 resources, after process 2 frees its memory, process 1 can be allocated with 1 resource needed.
+    \item A computer has six tape drives, with $n$ processes competing for them. Each process may need two drives. For which values of $n$ is the system deadlock free?\\
+    For $0\leq n\leq5,n\in\mathbb{N}$ the system is deadlock free. As long as each process is allocated with one tape drive and one of the process can be allocated with 2 tape drives, the system is deadlock free.
+    \item A real-time system has four periodic events with periods of 50, 100, 200, and 250 msec each. Suppose the four events require 35, 20, 10, and $x$ msec of CPU time, respectively. What is the largest value $x$ for which the system is schedulable?\\
+    Utilization of a CPU: $U=\sum_{i=1}^n{\frac{C_i}{P_i}}$, where $n=4$ is the number of tasks.\\
+    Schedulable utiilization bound: $U_b\leq1$ (refer to ECE4730J Lecture 8).
+    \[\frac{35}{50}+\frac{20}{100}+\frac{10}{200}+\frac{x}{250}\leq1\]
+    Solving the equation,
+    \[x\leq12.5\]
+    Therefore, the largest value $x$ for which the system is schedulable is 12.5.
+    \item Round-robin schedulers normally maintain a list of all runnable processes, with each process occurring exactly once in the list. What would happen if a process occurred more than once in the list? Would there be any reason for allowing this?\\
+    If a process occurred more than once in the list, it will be executed more than once in one period (it may be executed in adjacent time slices). The reason for allowing this is that some processes have higher priorities (or strategies decided by the scheduler of the operating system) so that they have to occupy more time slices to finish first.
+    \item Can a measure of whether a process is likely to be CPU bound or I/O bound be detected by analyzing the source code. How to determine it at runtime?\\
+    If a process is mainly doing a mass of calculations, it is likely to be CPU bound; if it is mainly doing a lot of file inputs and outputs (files can be peripherals, devices, etc.), it is likely to be I/O bound.\\
+    Techniques to determine at runtime:\\
+    \begin{itemize}
+        \item Using \texttt{top} or \texttt{htop} (an interactive process viewer) to display Linux processes and see their CPU usage and memory usage.
+        \item Using \texttt{iotop} to see the disk read and disk write of commands for Linux kernel version 2.6.20 or later.
+        \item Using \texttt{ps} to see the state of processes (D for disk, R for run, S for sleep).
+        \item For some Linux systems, using \texttt{iostat} to see the CPU statistics and input/output statistics for devices, partitions, and NFS (network filesystems).
+    \end{itemize}
+\end{enumerate}
+\section*{Ex. 2 — Deadlocks}
+\begin{enumerate}
+    \item Determine the content of the Request matrix.\\
+    The request matrix is equal to the maximum matrix minus the allocated matrix:
+    \[\begin{pmatrix}
+        7&4&3\\
+        1&2&2\\
+        6&0&0\\
+        0&1&1\\
+        4&3&1
+    \end{pmatrix}\]
+    \item Is the system in a safe state?\\
+    Process the Banker's algorithm, start and finish $P_2$, available resource:\\
+    \[\begin{pmatrix}
+        3&3&2
+    \end{pmatrix}-
+    \begin{pmatrix}
+        1&2&2
+    \end{pmatrix}+
+    \begin{pmatrix}
+        3&2&2
+    \end{pmatrix}=
+    \begin{pmatrix}
+        5&3&2
+    \end{pmatrix}
+    \]
+    Now availabe resource is enough for both $P_4$ and $P_5$. We assume we always start process with less process number first. Start and finish $P_4$, available resource:
+    \[\begin{pmatrix}
+        5&3&2
+    \end{pmatrix}-
+    \begin{pmatrix}
+        0&1&1
+    \end{pmatrix}+
+    \begin{pmatrix}
+        2&2&2
+    \end{pmatrix}=
+    \begin{pmatrix}
+        7&4&3
+    \end{pmatrix}
+    \]
+    Start and finish $P_1$, available resource:
+    \[\begin{pmatrix}
+        7&4&3
+    \end{pmatrix}-
+    \begin{pmatrix}
+        7&4&3
+    \end{pmatrix}+
+    \begin{pmatrix}
+        7&5&3
+    \end{pmatrix}=
+    \begin{pmatrix}
+        7&5&3
+    \end{pmatrix}
+    \]
+    Start and finish $P_3$, available resource:
+    \[\begin{pmatrix}
+        7&5&3
+    \end{pmatrix}-
+    \begin{pmatrix}
+        6&0&0
+    \end{pmatrix}+
+    \begin{pmatrix}
+        9&0&2
+    \end{pmatrix}=
+    \begin{pmatrix}
+        10&5&5
+    \end{pmatrix}
+    \]
+    Start and finish $P_5$, available resource:
+    \[\begin{pmatrix}
+        10&5&5
+    \end{pmatrix}-
+    \begin{pmatrix}
+        4&3&1
+    \end{pmatrix}+
+    \begin{pmatrix}
+        4&3&3
+    \end{pmatrix}=
+    \begin{pmatrix}
+        10&5&7
+    \end{pmatrix}
+    \]
+    Therefore, the system is in a safe state.
+    \item Can all the processes be completed without the system being in an unsafe state at any stage?\\
+    Yes, all the processes can be completed without the system being in an unsafe state at any stage. The reason is already shown above.
+\end{enumerate}
+\section*{Ex. 3 — Programming}
+Implement the Banker’s algorithm.
+
+See h5ex3.c and README.md.
+\section*{Ex. 4 — Minix 3}
+How is scheduling handled in Minix 3? Provide clear explanations on how to find the information just by exploring the source code of Minix kernel.
+
+Find files of source code that are related to scheduling:
+\begin{minted}[frame=single,bgcolor=bg,breaklines]{bash}
+grep -R scheduling /usr/src/kernel
+find /usr/src -name sched
+\end{minted}
+Related source code is:
+\begin{itemize}
+    \item \texttt{/usr/src/kernel/main.c}
+    \item \texttt{/usr/src/server/sched/main.c}
+\end{itemize}
+\begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{c}
+/* See if this process is immediately schedulable.
+ * In that case, set its privileges now and allow it to run.
+ * Only kernel tasks and the root system process get to run immediately.
+ * All the other system processes are inhibited from running by the
+ * RTS_NO_PRIV flag. They can only be scheduled once the root system
+ * process has set their privileges.
+ */
+ proc_nr = proc_nr(rp);
+schedulable_proc = (iskerneln(proc_nr) || isrootsysn(proc_nr) ||
+	proc_nr == VM_PROC_NR);
+if(schedulable_proc) {
+    /* Assign privilege structure. Force a static privilege id. */
+        (void) get_priv(rp, static_priv_id(proc_nr));
+        /* Priviliges for kernel tasks. */
+    if(proc_nr == VM_PROC_NR) {
+            priv(rp)->s_flags = VM_F;
+            priv(rp)->s_trap_mask = SRV_T;
+	ipc_to_m = SRV_M;
+	kcalls = SRV_KC;
+            priv(rp)->s_sig_mgr = SELF;
+            rp->p_priority = SRV_Q;
+            rp->p_quantum_size_ms = SRV_QT;
+    }
+    else if(iskerneln(proc_nr)) {
+            /* Privilege flags. */
+            priv(rp)->s_flags = (proc_nr == IDLE ? IDL_F : TSK_F);
+            /* Allowed traps. */
+            priv(rp)->s_trap_mask = (proc_nr == CLOCK 
+                || proc_nr == SYSTEM  ? CSK_T : TSK_T);
+            ipc_to_m = TSK_M;                  /* allowed targets */
+            kcalls = TSK_KC;                   /* allowed kernel calls */
+        }
+        /* Priviliges for the root system process. */
+        else {
+    	assert(isrootsysn(proc_nr));
+            priv(rp)->s_flags= RSYS_F;        /* privilege flags */
+            priv(rp)->s_trap_mask= SRV_T;     /* allowed traps */
+            ipc_to_m = SRV_M;                 /* allowed targets */
+            kcalls = SRV_KC;                  /* allowed kernel calls */
+            priv(rp)->s_sig_mgr = SRV_SM;     /* signal manager */
+            rp->p_priority = SRV_Q;	          /* priority queue */
+            rp->p_quantum_size_ms = SRV_QT;   /* quantum size */
+        }
+        /* Fill in target mask. */
+        memset(&map, 0, sizeof(map));
+        if (ipc_to_m == ALL_M) {
+            for(j = 0; j < NR_SYS_PROCS; j++)
+                set_sys_bit(map, j);
+        }
+        fill_sendto_mask(rp, &map);
+
+        /* Fill in kernel call mask. */
+        for(j = 0; j < SYS_CALL_MASK_SIZE; j++) {
+            priv(rp)->s_k_call_mask[j] = (kcalls == NO_C ? 0 : (~0));
+        }
+}
+else {
+    /* Don't let the process run for now. */
+        RTS_SET(rp, RTS_NO_PRIV | RTS_NO_QUANTUM);
+}
+\end{minted}
+The Minix kernel firstly check whether the process is immediately schedulable. If the process is immediately schedulable, the kernel will set its privileges and lets it run. Besides, only kernel task or root system process are able to run immediately, otherwise the kernel does not let it run for now.
+\begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{c}
+/* Initialize scheduling timers, used for running balance_queues */
+init_scheduling();
+
+/* This is SCHED's main loop - get work and do it, forever and forever. */
+while (TRUE) {
+    int ipc_status;
+
+    /* Wait for the next message and extract useful information from it. */
+    if (sef_receive_status(ANY, &m_in, &ipc_status) != OK)
+        panic("SCHED sef_receive error");
+    who_e = m_in.m_source;	/* who sent the message */
+    call_nr = m_in.m_type;	/* system call number */
+
+    /* Check for system notifications first. Special cases. */
+    if (is_ipc_notify(ipc_status)) {
+        switch(who_e) {
+            case CLOCK:
+                expire_timers(m_in.NOTIFY_TIMESTAMP);
+                continue;	/* don't reply */
+            default :
+                result = ENOSYS;
+        }
+
+        goto sendreply;
+    }
+
+    switch(call_nr) {
+    case SCHEDULING_INHERIT:
+    case SCHEDULING_START:
+        result = do_start_scheduling(&m_in);
+        break;
+    case SCHEDULING_STOP:
+        result = do_stop_scheduling(&m_in);
+        break;
+    case SCHEDULING_SET_NICE:
+        result = do_nice(&m_in);
+        break;
+    case SCHEDULING_NO_QUANTUM:
+        /* This message was sent from the kernel, don't reply */
+        if (IPC_STATUS_FLAGS_TEST(ipc_status,
+            IPC_FLG_MSG_FROM_KERNEL)) {
+            if ((rv = do_noquantum(&m_in)) != (OK)) {
+                printf("SCHED: Warning, do_noquantum "
+                    "failed with %d\n", rv);
+            }
+            continue; /* Don't reply */
+        }
+        else {
+            printf("SCHED: process %d faked "
+                "SCHEDULING_NO_QUANTUM message!\n",
+                    who_e);
+            result = EPERM;
+        }
+        break;
+    default:
+        result = no_sys(who_e, call_nr);
+    }
+
+sendreply:
+    /* Send reply. */
+    if (result != SUSPEND) {
+    	m_in.m_type = result;  		/* build reply message */
+    	reply(who_e, &m_in);		/* send it away */
+    }
+}
+\end{minted}
+After initializing timers used for running \texttt{balance\_queues}, the scheduler starts the SCHED's main loop. During the loop, it will wait for the next message and check for system notifications first. Then, it will do different operations depending on the value of \texttt{call\_nr}, the system call number.
+\section*{Ex. 5 — The reader-writer problem}
+\begin{enumerate}
+    \item Explain how to get a read lock, and write the corresponding pseudocode.\\
+    To get a read lock, we have to first lock the count, increase the count. If now the count is 1, lock the database. Finally, unlock the count.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{c}
+int count = 0;
+sem_t count_lock;
+sem_t db_lock;
+sem_init(&count_lock, 0, 1);
+sem_init(&db_lock, 0, 1);
+
+void read_lock() {
+    sem_wait(&count_lock);  // down(count_lock);
+    count++;
+    if (count == 1)
+        sem_wait(&db_lock);  // down(db_lock);
+    sem_post(&count_lock);  // up(count_lock);
+}
+    \end{minted}
+    \item Describe what is happening if many readers request a lock.\\
+    If many readers request a lock, the readers may starve the writer. It is unfair, because once a reader acquires the \texttt{count\_lock}, other readers can also acquire this lock, but if a writer wants to acquire \texttt{db\_lock}, it must wait for all the readers to finish. The last exiting reader \texttt{up}s \texttt{db\_lock} so that the waiting writer can acquire this lock.
+    \item Explain how to implement this idea using another semaphore called \texttt{read\_lock}.\\
+    Before acquiring \texttt{db\_lock}, the program should block other readers. After acquiring \texttt{db\_lock}, recover \texttt{read\_lock}. Besides, before readers acquiring the \texttt{count\_lock}, it has to wait for the writer to release \texttt{read\_lock}.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines,linenos]{c}
+int count = 0;
+sem_t count_lock;
+sem_t db_lock;
+sem_t read_lock;
+sem_init(&count_lock, 0, 1);
+sem_init(&db_lock, 0, 1);
+sem_init(&read_lock, 0, 1);
+
+void read_lock() {
+    sem_wait(&read_lock);  // down(read_lock);
+    sem_wait(&count_lock);  // down(count_lock);
+    count++;
+    if (count == 1)
+        sem_wait(&db_lock);  // down(db_lock);
+    sem_post(&count_lock);  // up(count_lock);
+    // read_lock can also be posted immediately after waiting count_lock or before posting count_lock.
+    sem_post(&read_lock);  // up(read_lock);
+}
+
+void read_unlock() {
+    sem_wait(&count_lock);  // down(count_lock);
+    count--;
+    if (count == 0)
+        sem_post(&db_lock);  // up(db_lock);
+    sem_post(&count_lock);  // up(count_lock);
+}
+
+void write_lock() {
+    sem_wait(&read_lock);  // down(read_lock);
+    sem_wait(&db_lock);  // down(db_lock);
+}
+
+void write_unlock() {
+    // read_lock can also be posted at the end of write_lock() after waiting for db_lock.
+    sem_post(&read_lock);  // up(read_lock);
+    sem_post(&db_lock);  // up(db_lock);
+}
+    \end{minted}
+    \item Is this solution giving any unfair priority to the writer or the reader? Can the problem be considered as solved?\\
+    % Yes, this solution is giving higher priority to the writer than the reader.\\
+    No, this solution is not giving any unfair priority to the writer or the reader.\\
+    No, the problem cannot be considered as solved because this solution can ensure no thread starving if and only if the semaphores preserve first-in first-out ordering when blocking and releasing threads in case there are multiple writers.
+\end{enumerate}
+\end{document}

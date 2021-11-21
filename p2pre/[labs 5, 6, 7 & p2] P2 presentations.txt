@@ -1,0 +1,63 @@
+[labs 5, 6, 7 & p2] P2 presentations
+Yiding Chang 常毅丁
+No unread replies.No replies.
+Dear all,
+
+To help you understand project 2 better, we will hold presentations in labs 5, 6, and 7. According to the milestones and your progress on the project, we have divided the topics into 3 sections, one for each lab. You will be giving presentations with your group-pair partner. Each presentation should be roughly 3-7 minutes. For these three labs, we will have only one lab session per week:
+
+Time: October 21st, 28th, and November 4th (Thursday) 18:20-20:55
+Venue: Room 211 @ East Lower Hall (东下院)
+Lab 5 Topics - Tricks Related to Special C++ Functionalities
+(lambda expressions) What are lambda expressions in C++ and what is the basic syntax? What are capture clauses?
+
+(rvalue reference and move) What is lvalue, rvalue and rvalue reference in C++11? What is std::move function? Explain both the concepts and usages.
+
+(scopes) What is the concept of scopes in C/C++? What is the storage duration of a variable? When will the constructor and destructor of an object be called? Consider the std::move function and explain why it can save time.
+
+(smart pointer) What are smart pointers C++11? What are their advantages compared to the low level memory management (new/delete)? What is the difference between unique_ptr and shared_ptr? Explain how they can be powered by rvalue reference and move.
+
+(function) What are function objects in C++11? What is the relationship between function pointers, lambda expressions and std::function objects?
+
+(iterator) How to implement a STL style iteration interface?
+
+(exceptions) How to use exception in C++? Why noexcept keyword is added in C++11? Why the exception in C++ is considered slow sometimes?
+
+(object oriented programming) What is the usage of explicit and =default? Discuss all types of constructors and assignments in C++11. What is a member initializer list?
+
+(object oriented programming) What are virtual functions and abstract classes? What is the friend keyword and why should it be used as little as possible? Why are the override and final keywords added in C++11?
+(basics) How to use getopt_long? How to debug using #define and how to enable/disable debug mode during compilation?
+
+(data structure) What data structure does LemonDB use to organize its tables? What are B-trees and B+ trees? Why do modern database management systems such as SQLite use them? 
+
+Lab 6 Topics - C++ Functionalities (Contd.), Database Essentials and Git
+(auto and decltype) What are the auto and decltype keywords? How can they be applied in for-range loops and lambda expressions in C++11?
+(emplace and forward) When should we use emplace instead of push in STL containers? What is parameter pack in C++11? How to use std::forward to apply this trick?
+(iterator) What is the structure of std::iterator and when is it used? Provide code examples to explain how to use it in a custom class.
+(STL) How to use basic data structures of STL like std::unordered_map, std::deque, and how are they implemented? Why are we using std::unordered_map for databases (think in terms of time complexity)? Are they thread-safe?
+(basics) What are inline functions, constexpr specifiers, and the static keyword in C++? When and how should we use them?
+(database structure) Explain the concept of row- and column-oriented database management system (DBMS). Which is more efficient? What kind of database is LemonDB?
+(git) How do you develop a project with 4 group members together? If there are 10 developers, what will happen? And if there are 100, 1000? Will your methods still be available in this condition? Discuss how to improve it to satisfy unlimited contributors. You can refer to how huge projects on GitHub works.
+Lab 7 Topics - Multithreaded Programming and Database Management 
+(multi-threading) Explain the general database concept and common issues related to multi-threading in this context.
+
+(multi-threading) What are pop-up threads and why do they fit well in this project?
+
+(multi-threading) How to split a query into subqueries to fully use all the cores?
+
+(mutex and semaphore) How to use mutex and semaphore in C++? If several threads call mutex-lock when a mutex is already locked, when this mutex is unlocked, which thread will acquire this mutex?
+
+(database queries) Discussion/summary/clarification about the LISTEN instruction.
+
+(database queries) How does the parser transform query into internal commands?
+
+ Each pair can select one topic from the above 24 topics. Sign up for the topics in the "Scheduler" Tab under the "Calendar" section on Canvas. Remember to tick the box in front of VE482. Please discuss with your partner which topic to choose. We follow the rule of first-come, first-served. If you do not choose at all, you will receive a zero for this presentation. 
+
+At least one of the pair members has to show up during the presentation. For those who have trouble attending the lab sessions, try to help your partner to find information and prepare the slides. You can check the recordings afterward. For online students, you can also try to give the presentation over the online meeting.
+
+If you have any questions, feel free to contact us via Piazza or email.
+
+Best regards,
+
+VE482 TA Group
+
+This topic was edited by Boming Zhang 张泊明

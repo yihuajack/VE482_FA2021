@@ -1,0 +1,6 @@
+[submodule "l6/zathura-text"]
+	path = l6/zathura-text
+	url = https://github.com/yihuajack/zathura-text.git
+[submodule "VE482_Lab_Pair11"]
+	path = VE482_Lab_Pair11
+	url = https://github.com/yihuajack/VE482_Lab_Pair11

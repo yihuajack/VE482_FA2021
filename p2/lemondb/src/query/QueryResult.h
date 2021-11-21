@@ -37,12 +37,12 @@ public:
   bool display() override { return false; }
 };
 
-class SuceededQueryResult : public QueryResult {
+class succeededQueryResult : public QueryResult {
 public:
   bool success() override { return true; }
 };
 
-class NullQueryResult : public SuceededQueryResult {
+class NullQueryResult : public succeededQueryResult {
 public:
   bool display() override { return false; }
 
@@ -65,20 +65,24 @@ public:
     this->msg = R"(Query "?" failed in Table "?" : ?)"_f % qname % table % msg;
   }
 
+  explicit ErrorMsgResult(const std::string &msg) {
+     this->msg = msg;
+  }
+
 protected:
   std::ostream &output(std::ostream &os) const override {
     return os << msg << "\n";
   }
 };
 
-class SuccessMsgResult : public SuceededQueryResult {
+class SuccessMsgResult : public succeededQueryResult {
   std::string msg;
 
 public:
-  bool display() override { return false; }
+  bool display() override { return true; }
 
   explicit SuccessMsgResult(const int number) {
-    this->msg = R"(ANSWER = "?".)"_f % number;
+    this->msg = R"(ANSWER = ?)"_f % number;
   }
 
   explicit SuccessMsgResult(std::vector<int> results) {
@@ -93,6 +97,10 @@ public:
 
   explicit SuccessMsgResult(const char *qname) {
     this->msg = R"(Query "?" success.)"_f % qname;
+  }
+
+  explicit SuccessMsgResult(const std::string &msg) {
+    this->msg = msg;
   }
 
   SuccessMsgResult(const char *qname, const std::string &msg) {
@@ -110,7 +118,7 @@ protected:
   }
 };
 
-class RecordCountResult : public SuceededQueryResult {
+class RecordCountResult : public succeededQueryResult {
   const int affectedRows;
 
 public:

@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+chmod +x ex3\PYGZhy{}2.sh
+./ex3\PYGZhy{}2.sh \PYG{p}{\PYGZam{}} ./ex3\PYGZhy{}2.sh
+\end{Verbatim}

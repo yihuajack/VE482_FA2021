@@ -1,0 +1,39 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int} \PYG{n}{count} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{n}{sem\PYGZus{}t} \PYG{n}{count\PYGZus{}lock}\PYG{p}{;}
+\PYG{n}{sem\PYGZus{}t} \PYG{n}{db\PYGZus{}lock}\PYG{p}{;}
+\PYG{n}{sem\PYGZus{}t} \PYG{n}{read\PYGZus{}lock}\PYG{p}{;}
+\PYG{n}{sem\PYGZus{}init}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{count\PYGZus{}lock}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{n}{sem\PYGZus{}init}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{db\PYGZus{}lock}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{n}{sem\PYGZus{}init}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{read\PYGZus{}lock}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{);}
+
+\PYG{k+kt}{void} \PYG{n+nf}{read\PYGZus{}lock}\PYG{p}{()} \PYG{p}{\PYGZob{}}
+    \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{read\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(read\PYGZus{}lock);}
+    \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{count\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(count\PYGZus{}lock);}
+    \PYG{n}{count}\PYG{o}{++}\PYG{p}{;}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{count} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)}
+        \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{db\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(db\PYGZus{}lock);}
+    \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{count\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(count\PYGZus{}lock);}
+    \PYG{c+c1}{// read\PYGZus{}lock can also be posted immediately after waiting count\PYGZus{}lock or before posting count\PYGZus{}lock.}
+    \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{read\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(read\PYGZus{}lock);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{read\PYGZus{}unlock}\PYG{p}{()} \PYG{p}{\PYGZob{}}
+    \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{count\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(count\PYGZus{}lock);}
+    \PYG{n}{count}\PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{p}{;}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{count} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)}
+        \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{db\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(db\PYGZus{}lock);}
+    \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{count\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(count\PYGZus{}lock);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{write\PYGZus{}lock}\PYG{p}{()} \PYG{p}{\PYGZob{}}
+    \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{read\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(read\PYGZus{}lock);}
+    \PYG{n}{sem\PYGZus{}wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{db\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// down(db\PYGZus{}lock);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{write\PYGZus{}unlock}\PYG{p}{()} \PYG{p}{\PYGZob{}}
+    \PYG{c+c1}{// read\PYGZus{}lock can also be posted at the end of write\PYGZus{}lock() after waiting for db\PYGZus{}lock.}
+    \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{read\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(read\PYGZus{}lock);}
+    \PYG{n}{sem\PYGZus{}post}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{db\PYGZus{}lock}\PYG{p}{);}  \PYG{c+c1}{// up(db\PYGZus{}lock);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,63 @@
+\documentclass[a4paper]{article}
+\usepackage{amsmath,amssymb,caption,float,graphicx,minted,xcolor}
+% \usepackage[utf8]{inputenc}
+% \usepackage[english]{babel}
+% \usepackage[backend=bibtex]{biblatex}
+% \addbibresource{Lab3.bib}
+\captionsetup[figure]{labelsep=period}
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
+\renewcommand\thesection{\arabic{section}}
+\usemintedstyle{emacs}
+\begin{document}
+\begin{center}
+    \huge
+    \textbf{VE482\\Introduction to Operating Systems\\}
+    \Large
+    \vspace{15pt}
+    \uppercase{\textbf{Homeork 4}}\\
+    \large
+    \vspace{5pt}\today\\
+    \vspace{5pt}
+    Yihua Liu 518021910998
+    \vspace{5pt}
+    \rule[-5pt]{.97\linewidth}{0.05em}
+\end{center}
+\section*{Ex. 1 — Simple questions}
+1. Consider a system in which threads are implemented entirely in user space, with the run-time system getting a clock interrupt once a second. Suppose that a clock interrupt occurs while some thread is executing in the run-time system. What problem might occur? Can you suggest a way to solve it?
+
+Race condition might occur and the result is "indeterminate". Since threads share data and scheduling is uncontrollable, when multiple executing threads enters the critical region simultaneously, they all try to update shared data structure. Thus, the result is determined by which threads executed at which time.
+
+To solve it, the earliest solution is to control the interrupts (close interrupts before the critical region). Later, Dekker's algorithm and Peterson's algorithm are proposed. Now, Pthread locks should be introduced.\\
+2. Suppose that an operating system does not have anything like the \texttt{select} system call (man \texttt{select} for more details on the command) to see in advance if it is safe to read from a file, pipe, or device, but it does allow alarm clocks to be set that interrupt blocked system calls. Is it possible to implement a threads package in user space under these conditions? Discuss.
+
+Yes, it is. Since it does allow alarm clocks to be set that interrupt blocked system calls, we can make threads to check the status of a file, a pipe, or device before a system call. If a system call is blocked, then threads can regain the control.
+\section*{Ex. 2 — Monitors}
+During the lecture monitors were introduced (3.30). They use condition variables as well as two instructions, \texttt{wait} and \texttt{signal}. A different approach would be to have only one operation called \texttt{waituntil}, which would check the value of a boolean expression and only allow a process to run when it evaluates as True. What would be the drawback of such a solution?
+
+The drawback o such a solution is that \texttt{waituntil} has to check the exiting condition every time, so it would waste a lot of resources.
+\section*{Ex. 3 — Race condition in Bash}
+Write a Bash script which generates a file composed of one integer per line. The script should read the last number in the file, add one to it, and append the result to the file.
+\begin{enumerate}
+    \item Run the script in both background and foreground at the same time. How long does it take before observing a race condition?
+    \begin{minted}[frame=single,bgcolor=bg,breaklines]{bash}
+chmod +x ex3-1.sh
+./ex3-1.sh & ./ex3-1.sh
+    \end{minted}
+    On WSL, the race condition takes place at number 5 (or 1, 9, 16), and on VMware Ubuntu virtual machine, the race condition takes place at number 2.\\
+    See ex3-1.sh.
+    \item Modify the script such as to prevent the race condition.
+    \begin{minted}[frame=single,bgcolor=bg,breaklines]{bash}
+chmod +x ex3-2.sh
+./ex3-2.sh & ./ex3-2.sh
+    \end{minted}
+    See ex3-2.sh.
+\end{enumerate}
+\section*{Ex. 4 — Programming with semaphores}
+The following C code creates two threads which increment a common global variable. When run it generates a random and inaccurate output. In order to solve this problem we want to use semaphores.
+\begin{enumerate}
+    \item On Linux, find the file \textit{semaphore.h}.
+    \item Read the documentation to understand how to use the functions described in the file \textit{semaphore.h}.
+    \item Using semaphores adjust the program such as to always return the correct answer.
+\end{enumerate}
+See ex4.c.
+\end{document}

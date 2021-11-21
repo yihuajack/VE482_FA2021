@@ -1,0 +1,67 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/* Initialize scheduling timers, used for running balance\PYGZus{}queues */}
+\PYG{n}{init\PYGZus{}scheduling}\PYG{p}{();}
+
+\PYG{c+cm}{/* This is SCHED\PYGZsq{}s main loop \PYGZhy{} get work and do it, forever and forever. */}
+\PYG{k}{while} \PYG{p}{(}\PYG{n}{TRUE}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{ipc\PYGZus{}status}\PYG{p}{;}
+
+    \PYG{c+cm}{/* Wait for the next message and extract useful information from it. */}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{sef\PYGZus{}receive\PYGZus{}status}\PYG{p}{(}\PYG{n}{ANY}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{ipc\PYGZus{}status}\PYG{p}{)} \PYG{o}{!=} \PYG{n}{OK}\PYG{p}{)}
+        \PYG{n}{panic}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}SCHED sef\PYGZus{}receive error\PYGZdq{}}\PYG{p}{);}
+    \PYG{n}{who\PYGZus{}e} \PYG{o}{=} \PYG{n}{m\PYGZus{}in}\PYG{p}{.}\PYG{n}{m\PYGZus{}source}\PYG{p}{;}	\PYG{c+cm}{/* who sent the message */}
+    \PYG{n}{call\PYGZus{}nr} \PYG{o}{=} \PYG{n}{m\PYGZus{}in}\PYG{p}{.}\PYG{n}{m\PYGZus{}type}\PYG{p}{;}	\PYG{c+cm}{/* system call number */}
+
+    \PYG{c+cm}{/* Check for system notifications first. Special cases. */}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{is\PYGZus{}ipc\PYGZus{}notify}\PYG{p}{(}\PYG{n}{ipc\PYGZus{}status}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+        \PYG{k}{switch}\PYG{p}{(}\PYG{n}{who\PYGZus{}e}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+            \PYG{k}{case} \PYG{n+nl}{CLOCK}\PYG{p}{:}
+                \PYG{n}{expire\PYGZus{}timers}\PYG{p}{(}\PYG{n}{m\PYGZus{}in}\PYG{p}{.}\PYG{n}{NOTIFY\PYGZus{}TIMESTAMP}\PYG{p}{);}
+                \PYG{k}{continue}\PYG{p}{;}	\PYG{c+cm}{/* don\PYGZsq{}t reply */}
+            \PYG{k}{default} \PYG{o}{:}
+                \PYG{n}{result} \PYG{o}{=} \PYG{n}{ENOSYS}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k}{goto} \PYG{n}{sendreply}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{switch}\PYG{p}{(}\PYG{n}{call\PYGZus{}nr}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+    \PYG{k}{case} \PYG{n+nl}{SCHEDULING\PYGZus{}INHERIT}\PYG{p}{:}
+    \PYG{k}{case} \PYG{n+nl}{SCHEDULING\PYGZus{}START}\PYG{p}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{n}{do\PYGZus{}start\PYGZus{}scheduling}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{);}
+        \PYG{k}{break}\PYG{p}{;}
+    \PYG{k}{case} \PYG{n+nl}{SCHEDULING\PYGZus{}STOP}\PYG{p}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{n}{do\PYGZus{}stop\PYGZus{}scheduling}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{);}
+        \PYG{k}{break}\PYG{p}{;}
+    \PYG{k}{case} \PYG{n+nl}{SCHEDULING\PYGZus{}SET\PYGZus{}NICE}\PYG{p}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{n}{do\PYGZus{}nice}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{);}
+        \PYG{k}{break}\PYG{p}{;}
+    \PYG{k}{case} \PYG{n+nl}{SCHEDULING\PYGZus{}NO\PYGZus{}QUANTUM}\PYG{p}{:}
+        \PYG{c+cm}{/* This message was sent from the kernel, don\PYGZsq{}t reply */}
+        \PYG{k}{if} \PYG{p}{(}\PYG{n}{IPC\PYGZus{}STATUS\PYGZus{}FLAGS\PYGZus{}TEST}\PYG{p}{(}\PYG{n}{ipc\PYGZus{}status}\PYG{p}{,}
+            \PYG{n}{IPC\PYGZus{}FLG\PYGZus{}MSG\PYGZus{}FROM\PYGZus{}KERNEL}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+            \PYG{k}{if} \PYG{p}{((}\PYG{n}{rv} \PYG{o}{=} \PYG{n}{do\PYGZus{}noquantum}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{))} \PYG{o}{!=} \PYG{p}{(}\PYG{n}{OK}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+                \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}SCHED: Warning, do\PYGZus{}noquantum \PYGZdq{}}
+                    \PYG{l+s}{\PYGZdq{}failed with \PYGZpc{}d}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{rv}\PYG{p}{);}
+            \PYG{p}{\PYGZcb{}}
+            \PYG{k}{continue}\PYG{p}{;} \PYG{c+cm}{/* Don\PYGZsq{}t reply */}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{else} \PYG{p}{\PYGZob{}}
+            \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}SCHED: process \PYGZpc{}d faked \PYGZdq{}}
+                \PYG{l+s}{\PYGZdq{}SCHEDULING\PYGZus{}NO\PYGZus{}QUANTUM message!}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,}
+                    \PYG{n}{who\PYGZus{}e}\PYG{p}{);}
+            \PYG{n}{result} \PYG{o}{=} \PYG{n}{EPERM}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{break}\PYG{p}{;}
+    \PYG{k}{default}\PYG{o}{:}
+        \PYG{n}{result} \PYG{o}{=} \PYG{n}{no\PYGZus{}sys}\PYG{p}{(}\PYG{n}{who\PYGZus{}e}\PYG{p}{,} \PYG{n}{call\PYGZus{}nr}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+
+\PYG{n+nl}{sendreply}\PYG{p}{:}
+    \PYG{c+cm}{/* Send reply. */}
+    \PYG{k}{if} \PYG{p}{(}\PYG{n}{result} \PYG{o}{!=} \PYG{n}{SUSPEND}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+    	\PYG{n}{m\PYGZus{}in}\PYG{p}{.}\PYG{n}{m\PYGZus{}type} \PYG{o}{=} \PYG{n}{result}\PYG{p}{;}  		\PYG{c+cm}{/* build reply message */}
+    	\PYG{n}{reply}\PYG{p}{(}\PYG{n}{who\PYGZus{}e}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{m\PYGZus{}in}\PYG{p}{);}		\PYG{c+cm}{/* send it away */}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+grep \PYGZhy{}R scheduling /usr/src/kernel
+find /usr/src \PYGZhy{}name sched
+\end{Verbatim}

@@ -14,12 +14,16 @@ class UpdateQuery : public ComplexQuery {
   Table::FieldIndex fieldId;
   Table::KeyType keyValue;
 
+
 public:
-  using ComplexQuery::ComplexQuery;
+    using ComplexQuery::ComplexQuery;
+    int UpdateQueryHelper(Table* tableptr, Table::Iterator begin, size_t range);
+
 
   QueryResult::Ptr execute() override;
 
   std::string toString() override;
+
 };
 
 #endif // PROJECT_UPDATEQUERY_H

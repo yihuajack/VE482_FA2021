@@ -1,0 +1,22 @@
+kind: pipeline
+type: ssh
+name: default
+server:
+        host:
+                from_secret: host
+        user:
+                from_secret: username
+        ssh_key:
+                from_secret: ssh_key
+steps:
+- name: mkdir
+  commands:
+  - mkdir build
+- name: load cmake
+  commands:
+  - cd build
+  - cmake -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ ../src
+- name: build
+  commands:
+  - cd build
+  - cmake --build .
