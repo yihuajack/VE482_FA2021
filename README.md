@@ -34,7 +34,7 @@ According to the student handbook (2020 version),
 | p1 presentation slide | 17.6   | 20     | 17.4 |                                                              |
 | p2 presentation slide | 25     | 30     | 21.8 |                                                              |
 | p1.3                  | 127.27 | 100    | 99.8 | base score: 520 / 520 bonus score: 200 / 220 total score: 520 / 520 * 100 + 200 / 220 * 30 |
-| p2.3                  | 7.5    | 100    | 46.1 |                                                              |
+| p2.3                  | 8.63   | 100    | 48.1 | ****                                                         |
 | p3.3                  | 126.5  | 100    | 57.8 |                                                              |
 
 *: See `l3/l3.txt`. For bullet 2, TA's explanation:
@@ -47,6 +47,8 @@ According to the student handbook (2020 version),
 
 Ex.1
 1.-5 2. -5 Ex.2 1. -5 Ex.4 -15 $ clang -lpthread -o ex4 ex4.c && ./ex4 ex4.c:14:18: warning: incompatible pointer types passing 'sem_t *\*' to parameter of type 'sem_t *'; remove & [-Wincompatible-pointer-types]        sem_wait(&sem);                 \^\~\~~ /usr/include/semaphore.h:55:29: note: passing argument to parameter '\_\_sem' here extern int sem_wait (sem_t *\_\_sem) \_\_nonnull ((1));                            ^ ex4.c:18:18: warning: incompatible pointer types passing 'sem_t **' to parameter of type 'sem_t *'; remove & [-Wincompatible-pointer-types]        sem_post(&sem);                 ^~~~ /usr/include/semaphore.h:78:29: note: passing argument to parameter '\_\_sem' here extern int sem_post (sem_t *_\_sem) _\_THROWNL __nonnull ((1));                            ^ 2 warnings generated. The futex facility returned an unexpected error code. The futex facility returned an unexpected error code. [1]    6304 abort (core dumped)  ./ex4
+
+****: base is 7.5 (see announcement "[P2] Payday"); mean from 46.1 to 48.1
 
 ### Grade Weights
 
