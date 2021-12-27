@@ -1,0 +1,374 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{ipt}{article}{}
+    \name{author}{2}{}{%
+      {{hash=a}{%
+         family={aishwaryaagarwal2},
+         familyi={a\bibinitperiod},
+      }}%
+      {{hash=V}{%
+         family={VaibhavRai3},
+         familyi={V\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {GeeksforGeeks}%
+    }
+    \strng{namehash}{aV1}
+    \strng{fullhash}{aV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{title}{Inverted Page Table in Operating System}
+    \verb{url}
+    \verb https://www.geeksforgeeks.org/inverted-page-table-in-operating-system
+    \verb /
+    \endverb
+    \field{day}{26}
+    \field{month}{10}
+    \field{year}{2021}
+  \endentry
+
+  \entry{ostep}{book}{}
+    \name{author}{2}{}{%
+      {{hash=ADRH}{%
+         family={Arpaci-Dusseau},
+         familyi={A\bibinithyphendelim D\bibinitperiod},
+         given={Remzi\bibnamedelima H.},
+         giveni={R\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+      {{hash=ADAC}{%
+         family={Arpaci-Dusseau},
+         familyi={A\bibinithyphendelim D\bibinitperiod},
+         given={Andrea\bibnamedelima C.},
+         giveni={A\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{2}{%
+      {Remzi H. Arpaci-Dusseau}%
+      {Andrea C. Arpaci-Dusseau}%
+    }
+    \strng{namehash}{ADRHADAC1}
+    \strng{fullhash}{ADRHADAC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{title}{Operating Systems: Three Easy Pieces}
+    \field{version}{1.00}
+    \field{month}{08}
+    \field{year}{2018}
+  \endentry
+
+  \entry{dirtycow}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=FTL}{%
+         family={Foundation},
+         familyi={F\bibinitperiod},
+         given={The\bibnamedelima Linux},
+         giveni={T\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FTL1}
+    \strng{fullhash}{FTL1}
+    \field{labelnamesource}{author}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{url}
+    \verb https://www.linuxfoundation.org/blog/how-bad-is-dirty-cow/
+    \endverb
+    \field{day}{24}
+    \field{month}{10}
+    \field{year}{2016}
+  \endentry
+
+  \entry{fmtstr}{article}{}
+    \name{author}{1}{}{%
+      {{hash=HM}{%
+         family={Hermeling},
+         familyi={H\bibinitperiod},
+         given={Mark},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {GrammaTech}%
+    }
+    \strng{namehash}{HM1}
+    \strng{fullhash}{HM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{Tainted Data and Format String Attack Strike Again}
+    \verb{url}
+    \verb https://blogs.grammatech.com/tainted-data-and-format-string-attack-st
+    \verb rike-again
+    \endverb
+    \field{day}{12}
+    \field{month}{08}
+    \field{year}{2019}
+  \endentry
+
+  \entry{Kocher2018spectre}{inproceedings}{}
+    \name{author}{13}{}{%
+      {{hash=KP}{%
+         family={Kocher},
+         familyi={K\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=HJ}{%
+         family={Horn},
+         familyi={H\bibinitperiod},
+         given={Jann},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=FA}{%
+         family={Fogh},
+         familyi={F\bibinitperiod},
+         given={Anders},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=}{%
+      }}%
+      {{hash=GD}{%
+         family={Genkin},
+         familyi={G\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=GD}{%
+         family={Gruss},
+         familyi={G\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=HW}{%
+         family={Haas},
+         familyi={H\bibinitperiod},
+         given={Werner},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=HM}{%
+         family={Hamburg},
+         familyi={H\bibinitperiod},
+         given={Mike},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=LM}{%
+         family={Lipp},
+         familyi={L\bibinitperiod},
+         given={Moritz},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=MS}{%
+         family={Mangard},
+         familyi={M\bibinitperiod},
+         given={Stefan},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=PT}{%
+         family={Prescher},
+         familyi={P\bibinitperiod},
+         given={Thomas},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Schwarz},
+         familyi={S\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=YY}{%
+         family={Yarom},
+         familyi={Y\bibinitperiod},
+         given={Yuval},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KP+1}
+    \strng{fullhash}{KPHJFAGDGDHWHMLMMSPTSMYY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{booktitle}{40th IEEE Symposium on Security and Privacy (S\&P'19)}
+    \field{title}{Spectre Attacks: Exploiting Speculative Execution}
+    \field{year}{2019}
+  \endentry
+
+  \entry{Lipp2018meltdown}{inproceedings}{}
+    \name{author}{12}{}{%
+      {{hash=LM}{%
+         family={Lipp},
+         familyi={L\bibinitperiod},
+         given={Moritz},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Schwarz},
+         familyi={S\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=GD}{%
+         family={Gruss},
+         familyi={G\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=PT}{%
+         family={Prescher},
+         familyi={P\bibinitperiod},
+         given={Thomas},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=HW}{%
+         family={Haas},
+         familyi={H\bibinitperiod},
+         given={Werner},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=FA}{%
+         family={Fogh},
+         familyi={F\bibinitperiod},
+         given={Anders},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=HJ}{%
+         family={Horn},
+         familyi={H\bibinitperiod},
+         given={Jann},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MS}{%
+         family={Mangard},
+         familyi={M\bibinitperiod},
+         given={Stefan},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=KP}{%
+         family={Kocher},
+         familyi={K\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=GD}{%
+         family={Genkin},
+         familyi={G\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=YY}{%
+         family={Yarom},
+         familyi={Y\bibinitperiod},
+         given={Yuval},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=HM}{%
+         family={Hamburg},
+         familyi={H\bibinitperiod},
+         given={Mike},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LM+1}
+    \strng{fullhash}{LMSMGDPTHWFAHJMSKPGDYYHM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{booktitle}{27th {USENIX} Security Symposium ({USENIX} Security 18)}
+    \field{title}{Meltdown: Reading Kernel Memory from User Space}
+    \field{year}{2018}
+  \endentry
+
+  \entry{meltdownattack}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=oTGU}{%
+         prefix={of},
+         prefixi={o\bibinitperiod},
+         family={Technology},
+         familyi={T\bibinitperiod},
+         given={Graz\bibnamedelima University},
+         giveni={G\bibinitperiod\bibinitdelim U\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TGUo1}
+    \strng{fullhash}{TGUo1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{subtitle}{Vulnerabilities in modern computers leak passwords and
+  sensitive data}
+    \field{title}{Meltdown and Spectre}
+    \verb{url}
+    \verb https://meltdownattack.com/
+    \endverb
+    \field{year}{2018}
+  \endentry
+
+  \entry{enwiki:1055115654}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{Wikipedia contributors}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{note}{[Online; accessed 24-November-2021]}
+    \field{title}{Buffer overflow --- {Wikipedia}{,} The Free Encyclopedia}
+    \verb{url}
+    \verb https://en.wikipedia.org/w/index.php?title=Buffer_overflow&oldid=1055
+    \verb 115654
+    \endverb
+    \field{year}{2021}
+  \endentry
+
+  \entry{dirtycowwiki}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{Wikipedia contributors}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{note}{[Online; accessed 24-November-2021]}
+    \field{title}{Dirty COW --- {Wikipedia}{,} The Free Encyclopedia}
+    \verb{url}
+    \verb https://en.wikipedia.org/w/index.php?title=Dirty_COW&oldid=1041784641
+    \endverb
+    \field{year}{2021}
+  \endentry
+\enddatalist
+\endinput

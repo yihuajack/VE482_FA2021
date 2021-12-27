@@ -1,7 +1,5 @@
 # LemonDB Recovered Files
 
-[![Build Status](https://focs.ji.sjtu.edu.cn:2222/api/badges/ve482-21/p2-group-02/status.svg)](https://focs.ji.sjtu.edu.cn:2222/ve482-21/p2-group-02)
-
 ## Introduction
 
 - ./src
@@ -24,8 +22,8 @@ See INSTALL.md for instructions on building from source.
 
 `ClangFormat` and `EditorConfig` are used to format codes.
 
-Hint to using `ClangFormat`:
-`find . -name "*.m" -o -name "*.h" | sed 's| |\\ |g' | xargs clang-format -i`
+Hint on using `ClangFormat`:
+`find . -name "*.cpp" -o -name "*.h" | sed 's| |\\ |g' | xargs clang-format -i`
 
 And make sure your code editor has `EditorConfig` support.
 

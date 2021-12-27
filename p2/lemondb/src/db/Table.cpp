@@ -32,47 +32,6 @@ void Table::insertByIndex(KeyType key, std::vector<ValueType> &&data) {
   this->data.emplace_back(std::move(key), data);
 }
 
-/* Table::Iterator Table::deleteByIndex(KeyType key) {
-  auto mapIt = this->keyMap.find(key);
-  if (mapIt == this->keyMap.end()) {
-    std::string err = ""; // TODO
-    throw ConflictingKey(err);
-  }
-  auto returnDataIt = this->data.erase(this->data.begin() + static_cast<long>(mapIt->second));
-  this->keyMap.erase(mapIt);
-  return Iterator{returnDataIt, this};
-}  */
-
-void Table::beforeDelete(Iterator i) {
-  i.it->should_delete = true;
-}
-
-void Table::doDelete() {
-  keyMap.clear();
-  std::vector<Datum> temp;
-  temp.swap(data);
-  for(auto it = temp.begin(); it != temp.end(); ++it) {
-    if(!it->should_delete) {
-      insertByIndex(it->key, std::move(it->datum));
-    }
-  }
-}
-
-bool Table::evalDuplicate(KeyType key) {
-  return this->keyMap.find(key + "_copy") == this->keyMap.end();
-}
-
-void Table::dupByIndex(long index, size_t &affected) {
-  using std::move;
-  auto it = this->data.begin() + index;
-  KeyType key = it->key + "_copy";
-  if (this->keyMap.find(key) != this->keyMap.end())
-    return;
-  this->keyMap.emplace(key, this->data.size());
-  this->data.emplace_back(move(key), it->datum);
-  affected++;
-}
-
 Table::Object::Ptr Table::operator[](const Table::KeyType &key) {
   auto it = keyMap.find(key);
   if (it == keyMap.end()) {

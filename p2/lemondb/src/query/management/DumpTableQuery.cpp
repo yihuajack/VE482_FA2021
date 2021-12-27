@@ -11,9 +11,7 @@
 constexpr const char *DumpTableQuery::qname;
 
 QueryResult::Ptr DumpTableQuery::execute() {
-  using std::exception;
-  using std::make_unique;
-  using std::ofstream;
+  using namespace std;
   auto &db = Database::getInstance();
   try {
     ofstream outfile(this->fileName);
@@ -23,7 +21,7 @@ QueryResult::Ptr DumpTableQuery::execute() {
     }
     outfile << db[this->targetTable];
     outfile.close();
-    return make_unique<NullQueryResult>();
+    return make_unique<SuccessMsgResult>(qname, targetTable);
   } catch (const exception &e) {
     return make_unique<ErrorMsgResult>(qname, e.what());
   }

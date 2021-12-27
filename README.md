@@ -10,19 +10,32 @@ According to the student handbook (2020 version),
 
 ### Correctness
 
-| Name                  | Score | Out of | Mean | Comments                                                     |
-| --------------------- | ----- | ------ | ---- | ------------------------------------------------------------ |
-| h1                    | 46    | 50     | 39.3 | Ex.4 -2 0.244 KB<br />Ex.5 -2 no README file                 |
-| h2                    | 75    | 75     | 66.4 |                                                              |
-| h3                    | 45.9  | 60     | 41.5 | Ex.1 1. -1 threads cooperation<br />4. -8<br />-10% late **  |
-| h4                    | 20    | 50     | 31.3 | ***                                                          |
-| l1                    | 95.5  | 100    | 84.6 | CPU heat issue. -0.5<br />2>&1 > What about stderr? -1<br />Linux file structure. -3 |
-| l2                    | 90    | 90     | 75.3 |                                                              |
-| l3                    | 80    | 90     | 65.1 | Use rsync to copy. -5<br />How to find active IP? -5 *       |
-| l4                    | 86    | 100    | 78.6 | 1.3.5 -9 None of the numbers are accurate. The first two are close (15880, 36956) so I did not deduct, but the last three are kind of off (63301,59933,63807).<br />2.1.6 -5 Did not provide what "reverse step" is. |
-| p1 presentation slide | 17.6  | 20     | 17.4 |                                                              |
-| p2 presentation slide | 25    | 30     | 21.8 |                                                              |
-| p1 deduction          | 0%    | 0      |      |                                                              |
+| Name                  | Score  | Out of | Mean | Comments                                                     |
+| --------------------- | ------ | ------ | ---- | ------------------------------------------------------------ |
+| h1                    | 46     | 50     | 39.3 | Ex.4 -2 0.244 KB<br />Ex.5 -2 no README file                 |
+| h2                    | 75     | 75     | 66.4 |                                                              |
+| h3                    | 45.9   | 60     | 41.5 | Ex.1 1. -1 threads cooperation<br />4. -8<br />-10% late **  |
+| h4                    | 20     | 50     | 31.3 | ***                                                          |
+| h5                    | 80     | 60     | 57.6 |                                                              |
+| h6                    | 35     | 60     | 40.6 |                                                              |
+| h7                    | 52     | 60     | 39.4 |                                                              |
+| h8                    | 42     | 40     | 45   |                                                              |
+| l1                    | 95.5   | 100    | 84.6 | CPU heat issue. -0.5<br />2>&1 > What about stderr? -1<br />Linux file structure. -3 |
+| l2                    | 90     | 90     | 75.3 |                                                              |
+| l3                    | 80     | 90     | 65.1 | Use rsync to copy. -5<br />How to find active IP? -5 *       |
+| l4                    | 86     | 100    | 78.6 | 1.3.5 -9 None of the numbers are accurate. The first two are close (15880, 36956) so I did not deduct, but the last three are kind of off (63301,59933,63807).<br />2.1.6 -5 Did not provide what "reverse step" is. |
+| l5                    | 100    | 100    | 73.9 |                                                              |
+| l6                    | 90     | 90     | 38.9 |                                                              |
+| l7                    | 90     | 90     | 71.6 |                                                              |
+| l8                    | 94     | 100    | 84.2 | -6 2.2.1 In Minix, LRU is implemented in /servers/vm/region.c, where a doubly linked list of yielded_t is kept. |
+| l9                    | 83.52  | 90     | 63   | -3.6% What about return 0? -3.6% cdev_add cannot create node under /dev |
+| l10                   | 63     | 90     | 58.9 | -2 2.1.1 How to ensure the new version of PATH is then forgotten? -5 mum will recognize the fake su -10 gp-2.12 not able to successfully do the job -10 lacking gp.service file |
+| l11                   | 70     | 100    | 45.2 | -30 code                                                     |
+| p1 presentation slide | 17.6   | 20     | 17.4 |                                                              |
+| p2 presentation slide | 25     | 30     | 21.8 |                                                              |
+| p1.3                  | 127.27 | 100    | 99.8 | base score: 520 / 520 bonus score: 200 / 220 total score: 520 / 520 * 100 + 200 / 220 * 30 |
+| p2.3                  | 7.5    | 100    | 46.1 |                                                              |
+| p3.3                  | 126.5  | 100    | 57.8 |                                                              |
 
 *: See `l3/l3.txt`. For bullet 2, TA's explanation:
 
@@ -34,6 +47,19 @@ According to the student handbook (2020 version),
 
 Ex.1
 1.-5 2. -5 Ex.2 1. -5 Ex.4 -15 $ clang -lpthread -o ex4 ex4.c && ./ex4 ex4.c:14:18: warning: incompatible pointer types passing 'sem_t *\*' to parameter of type 'sem_t *'; remove & [-Wincompatible-pointer-types]        sem_wait(&sem);                 \^\~\~~ /usr/include/semaphore.h:55:29: note: passing argument to parameter '\_\_sem' here extern int sem_wait (sem_t *\_\_sem) \_\_nonnull ((1));                            ^ ex4.c:18:18: warning: incompatible pointer types passing 'sem_t **' to parameter of type 'sem_t *'; remove & [-Wincompatible-pointer-types]        sem_post(&sem);                 ^~~~ /usr/include/semaphore.h:78:29: note: passing argument to parameter '\_\_sem' here extern int sem_post (sem_t *_\_sem) _\_THROWNL __nonnull ((1));                            ^ 2 warnings generated. The futex facility returned an unexpected error code. The futex facility returned an unexpected error code. [1]    6304 abort (core dumped)  ./ex4
+
+### Grade Weights
+
+| Group     | Weight |
+| --------- | ------ |
+| Homework  | 10%    |
+| Exams     | 40%    |
+| Labs      | 10%    |
+| Project 1 | 7.5%   |
+| Project 2 | 20%    |
+| Project 3 | 12.5%  |
+
+*I put this table here because you will not be given the weight of each project before the final grades are released. As is presented, Project 1 + Project 3 = Project 2.*
 
 ### Announcements
 
@@ -470,3 +496,51 @@ Task 10, 11, 13 become optional in project 1. The rest of the tasks will sum up 
 > At least one of the pair members has to show up during the presentation. For those who have trouble attending the lab sessions on Thursday, try to help your partner to find information and prepare the slides. You can check the recordings afterwards. 
 >
 > If you have any questions, feel free to contact us via Piazza or email.
+
+#### [P3] Meet your new colleagues (Nov 23)
+
+> Dear CoolZoners,
+>
+> Welcome aboard! At CoolZone IT solutions we are committed to providing a supportive environment to learn and grow; as such we hope you will find your experience enjoyable and rewarding. 
+>
+> Based on your background checks on your performance in Lemonion Inc., we have divided you into different p3-groups. Please find your new colleagues, and each group will be assigned a Git repository soon. Jim expects to see your work organized on Git, so all of you are suggested to make good use of it. 
+>
+> We are also aware that you have formed coding pairs in Lemonion Inc. and have adjusted some of them according to our background checks, especially the pairs randomly assigned originally. For the future lab sessions (starting from lab9), you will work with your new p3-group-pair partner(s).
+>
+> Lastly, some good news for those of you who were too busy when leaving Lemonion Inc. Thanks to a new collaboration project between Lemonion Inc. and us, the papers of the Lemonion Employee Evaluation Examination (midterm) will be made available during the paper checking session of the CoolZone IT Employee Evaluation Examination (final).
+>
+> Yours sincerely,
+>
+> Sylvia
+>
+> Human Resources Manager, CoolZone IT solutions
+>
+> [sylvia1993@coolzone.com](mailto:sylvia1993@coolzone.com) T: +86 21 29482503 | C: +86 13903121623
+
+#### [P3] The end is nigh (Dec 9)
+
+> Dear CoolZoners,
+>
+> Hope you are having fun on Jim's project. After it is due, we will be organizing a final delivery on the project on Nov. 16 from 11:30 to 15:30 in room F114, where Jim will take a look at your work. Two senior engineers (TAs) will be present, while another will oversee the process online. Each group will sign up for a 20-minute time slot in *Project 3 Final Delivery* in the "Scheduler" Tab under the "Calendar" section on Canvas. All the group members are expected to be physically in the room to present, so choose a slot when all of you are free. 
+>
+> Your Git repositories will be archived at 23:59 on Nov.15. On the next day, all the team members are expected to show up at least 10 minutes earlier. This time will be used to pull the code from the Git repository and compile it, in the presence of a senior engineer. During the final delivery of your project, you will need to present your MINIX source code (instead of git commits): which files have you modified, which part of code have you added, and your test program. 
+>
+> Please contact Jim or one of the three senior engineers if you meet any problems.
+>
+> Cheers,
+>
+> CoolZone IT Solutions Operations Control Team
+
+#### [P2] Payday (Dec 26)
+
+> Dear Lemonians,
+>
+> Thank you all for your hard work on fixing Lemondb. A round of pre-deployment testing has generated preliminary results on how well each team's version is doing. Based on these, we have formulated everyone's payrolls for this project, and you can find them on your Canvas account. The grading criteria is based on the one on the project manual, with three parts: documentation, correctness, and performance, in which part a zero was given for versions that are slower than the single-threaded one. 
+>
+> We strive to make Lemonion Inc. a fairer workplace for everyone. After consulting the Happy workplace initiative and looking at the number of commits for each group member, we have adjusted the actual paycheck everyone receives. If you find that your paycheck differs from the base pay, this is because we gave a penalty for the underworkers, a bonus for the workaholics, and a zero for those who barely worked. 
+>
+> If you have any problems for your paycheck, do not hesitate to contact us before **11:59 A.M., Dec. 27**. After this deadline, we will work with the CoolZone IT Solutions Operations Control Team to finalize a rating for your performance throughout the past three months, and any changes in the paychecks for any of the projects, labs, or assignments will no longer be available.
+>
+> Best regards,
+>
+> Lemonion Inc. Operations Control Team

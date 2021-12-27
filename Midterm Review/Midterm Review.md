@@ -109,9 +109,9 @@ Pop-Up Threads: [OS Pop-up Threads (codescracker.com)](https://codescracker.com/
 
 Critical region, Atomicity, Race condition, Mutual Exclusion: See OSTEP 26.4.
 
-Monitor: See [Midterm Review/Monitor.md](Midterm Review/Monitor.md) and [Monitor (synchronization) - Wikipedia](https://en.wikipedia.org/wiki/Monitor_(synchronization)).
+Monitor: See [Monitor.md](Monitor.md) and [Monitor (synchronization) - Wikipedia](https://en.wikipedia.org/wiki/Monitor_(synchronization)).
 
-Barrier: See [Midterm Review/Barrier.md](Midterm Review/Barrier.md) and [Barrier (computer science) - Wikipedia](https://en.wikipedia.org/wiki/Barrier_(computer_science)).
+Barrier: See [Barrier.md](Barrier.md) and [Barrier (computer science) - Wikipedia](https://en.wikipedia.org/wiki/Barrier_(computer_science)).
 
 ## Chapter 4: Scheduling
 
@@ -178,7 +178,7 @@ Deadlock Prevention
 
 ### Banker's Algorithm
 
-See [Midterm Review/Banker's Algorithm.md](Midterm Review/Banker's Algorithm.md).
+See [Banker's Algorithm.md](Banker's Algorithm.md).
 
 ### Cigarette Smokers Problem
 
@@ -190,4 +190,4 @@ See OSTEP 31.5 and h5ex5.
 
 ### Sleeping Barber Problem
 
-See [Midterm Review/Sleeping Barber Problem.md](Midterm Review/Sleeping Barber Problem.md).
+See [Sleeping Barber Problem.md](Sleeping Barber Problem.md).

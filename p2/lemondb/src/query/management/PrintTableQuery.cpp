@@ -11,10 +11,7 @@
 constexpr const char *PrintTableQuery::qname;
 
 QueryResult::Ptr PrintTableQuery::execute() {
-  using std::cout;
-  using std::endl;
-  using std::literals::string_literals::operator""s;
-  using std::make_unique;
+  using namespace std;
   Database &db = Database::getInstance();
   try {
     auto &table = db[this->targetTable];

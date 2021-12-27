@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{do\PYGZus{}getnchpid}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{pid\PYGZus{}t}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{p\PYGZus{}children}\PYG{p}{);}
+\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n+nf}{do\PYGZus{}getchpids}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{n}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{pid\PYGZus{}t}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{p\PYGZus{}children}\PYG{p}{);}
+\end{Verbatim}

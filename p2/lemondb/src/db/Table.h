@@ -55,8 +55,6 @@ private:
     /** The values in the order of fields */
     std::vector<ValueType> datum;
 
-    bool should_delete = false;
-
     Datum() = default;
 
     Datum(const Datum &) = default;
@@ -85,7 +83,6 @@ private:
   std::vector<FieldNameType> fields;
   /** Map field name into index */
   std::unordered_map<FieldNameType, FieldIndex> fieldMap;
-  //recordName to fieldIndex
 
   /** The rows are saved in a vector, which is unsorted */
   std::vector<Datum> data;
@@ -290,35 +287,6 @@ public:
    */
   void insertByIndex(KeyType key, std::vector<ValueType> &&data);
 
-  /**
-   * Remove a row of data by its key
-   * @param key
-   * @param data
-   */
-  // Iterator deleteByIndex(KeyType key);
-
-  /** Before deleting
-   * @param iterator
-   */
-  void beforeDelete(Iterator i);
-
-  /** Do deleting
-   */
-  void doDelete();
-
-  /**
-   * Check whether there exist copy of the key
-   * @param key
-   * @return true if the copy does not exist, false otherwise
-   */
-  bool evalDuplicate(KeyType key);
-
-  /**
-   * Duplicate by index
-   * @param index
-   * @param counter
-   */
-  void dupByIndex(long index, size_t &affected);
   /**
    * Access the value according to the key
    * @param key

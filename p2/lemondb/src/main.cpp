@@ -7,17 +7,14 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <chrono>
-#include "multiThread/MultiThread.h"
+
 #include "query/QueryBuilders.h"
 #include "query/QueryParser.h"
 
-#include "utils/io.h"
 struct {
-    std::string listen;
-    long threads = 0;
+  std::string listen;
+  long threads = 0;
 } parsedArgs;
-//only used to save result of input arguments
 
 void parseArgs(int argc, char *argv[]) {
   const option longOpts[] = {{"listen", required_argument, nullptr, 'l'},
@@ -53,8 +50,6 @@ std::string extractQueryString(std::istream &is) {
 int main(int argc, char *argv[]) {
   // Assume only C++ style I/O is used in lemondb
   // Do not use printf/fprintf in <cstdio> with this line
-
-
   std::ios_base::sync_with_stdio(false);
 
   parseArgs(argc, argv);
@@ -69,8 +64,6 @@ int main(int argc, char *argv[]) {
     }
   }
   std::istream is(fin.rdbuf());
-  //if listem fin becomes the file stream and is assign to is
-  //if not is is initialized as empty
 
 #ifdef NDEBUG
   // In production mode, listen argument must be defined
@@ -96,14 +89,12 @@ int main(int argc, char *argv[]) {
     exit(-1);
   } else if (parsedArgs.threads == 0) {
     // @TODO Auto detect the thread num
-    autoDectThreadNUm();
-
+    std::cerr << "lemondb: info: auto detect thread num" << std::endl;
   } else {
-    setThreadNum(parsedArgs.threads);
-
-  }
-    std::cerr << "lemondb: info: running in " << getThreadNum()
+    std::cerr << "lemondb: info: running in " << parsedArgs.threads
               << " threads" << std::endl;
+  }
+
   QueryParser p;
 
   p.registerQueryBuilder(std::make_unique<QueryBuilder(Debug)>());
@@ -112,14 +103,11 @@ int main(int argc, char *argv[]) {
 
   size_t counter = 0;
 
-  auto &isPool = IO::getISPool();
-//  auto fsPool = IO::getFSPool();
-  isPool.push_back(&is);
-  while (!isPool.empty()) {
+  while (is) {
     try {
       // A very standard REPL
       // REPL: Read-Evaluate-Print-Loop
-      std::string queryStr = extractQueryString(*isPool.back());
+      std::string queryStr = extractQueryString(is);
       Query::Ptr query = p.parseQuery(queryStr);
       QueryResult::Ptr result = query->execute();
       std::cout << ++counter << "\n";
@@ -138,17 +126,12 @@ int main(int argc, char *argv[]) {
       }
     } catch (const std::ios_base::failure &e) {
       // End of input
-      if (isPool.size()==1)
-        break;
-      if (isPool.size()>1){
-          delete isPool.back();
-      }
-      isPool.pop_back();
-      continue;
+      break;
     } catch (const std::exception &e) {
       std::cout.flush();
       std::cerr << e.what() << std::endl;
     }
   }
- return 0;
+
+  return 0;
 }

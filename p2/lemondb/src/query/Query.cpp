@@ -69,8 +69,7 @@ bool ComplexQuery::evalCondition(const Table::Object &object) {
 }
 
 bool ComplexQuery::testKeyCondition(
-    Table &table,
-    const std::function<void(bool, Table::Object::Ptr &&)>& function) {
+    Table &table, std::function<void(bool, Table::Object::Ptr &&)> function) {
   auto condResult = initCondition(table);
   if (!condResult.second) {
     function(false, nullptr);

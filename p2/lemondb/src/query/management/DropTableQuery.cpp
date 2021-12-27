@@ -9,13 +9,11 @@
 constexpr const char *DropTableQuery::qname;
 
 QueryResult::Ptr DropTableQuery::execute() {
-  using std::exception;
-  using std::literals::string_literals::operator""s;
-  using std::make_unique;
+  using namespace std;
   Database &db = Database::getInstance();
   try {
     db.dropTable(this->targetTable);
-    return make_unique<NullQueryResult>();
+    return make_unique<SuccessMsgResult>(qname);
   } catch (const TableNameNotFound &e) {
     return make_unique<ErrorMsgResult>(qname, targetTable, "No such table."s);
   } catch (const exception &e) {

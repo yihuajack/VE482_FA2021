@@ -1,0 +1,141 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{kerneldoc}{manual}{}
+    \name{author}{1}{}{%
+      {{hash=kdcT}{%
+         prefix={kernel\bibnamedelima development},
+         prefixi={k\bibinitperiod\bibinitdelim d\bibinitperiod},
+         family={community},
+         familyi={c\bibinitperiod},
+         given={The},
+         giveni={T\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {Free Software Foundation, Inc}%
+    }
+    \strng{namehash}{cTkd1}
+    \strng{fullhash}{cTkd1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{The Linux Kernel documentation}
+    \verb{url}
+    \verb https://www.kernel.org/doc/html/latest/index.html
+    \endverb
+    \field{version}{5.16.0-rc2}
+    \field{year}{2021}
+  \endentry
+
+  \entry{proflinuxk}{book}{}
+    \name{author}{1}{}{%
+      {{hash=MW}{%
+         family={Mauerer},
+         familyi={M\bibinitperiod},
+         given={Wolfgang},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {John Wiley \& Sons}%
+    }
+    \strng{namehash}{MW1}
+    \strng{fullhash}{MW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{isbn}{9781118079911}
+    \field{title}{Professional Linux Kernel Architecture}
+    \field{year}{2010}
+  \endentry
+
+  \entry{nongnu}{book}{}
+    \name{author}{1}{}{%
+      {{hash=PD}{%
+         family={Poirier},
+         familyi={P\bibinitperiod},
+         given={Dave},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \list{organization}{1}{%
+      {Free Software Foundation, Inc}%
+    }
+    \strng{namehash}{PD1}
+    \strng{fullhash}{PD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{The Second Extended File System}
+    \verb{url}
+    \verb https://www.nongnu.org/ext2-doc/ext2.html
+    \endverb
+    \field{year}{2019}
+  \endentry
+
+  \entry{science}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=RDA}{%
+         family={Rusling},
+         familyi={R\bibinitperiod},
+         given={David\bibnamedelima A.},
+         giveni={D\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{RDA1}
+    \strng{fullhash}{RDA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{The Linux Kernel}
+    \verb{url}
+    \verb http://www.science.unitn.it/~fiorella/guidelinux/tlk/
+    \endverb
+    \field{version}{DRAFT, 0.1-10(30)}
+    \field{month}{04}
+    \field{year}{1997}
+  \endentry
+
+  \entry{ext2wiki}{misc}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{Wikipedia contributors}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{note}{[Online; accessed 28-November-2021]}
+    \field{title}{Ext2 --- {Wikipedia}{,} The Free Encyclopedia}
+    \verb{url}
+    \verb https://en.wikipedia.org/w/index.php?title=Ext2&oldid=1057194173
+    \endverb
+    \field{year}{2021}
+  \endentry
+\enddatalist
+\endinput

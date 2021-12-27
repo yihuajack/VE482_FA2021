@@ -1,0 +1,973 @@
+diff --git a/.gitignore b/.gitignore
+index c74ee06e8..58134c642 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -41,3 +41,5 @@ releasetools/revision
+ share/zoneinfo/builddir
+ lib/libc/compat__*
+ .gdbinit
++*.json
++.vscode
+diff --git a/commands/service/parse.c b/commands/service/parse.c
+index a18ebef3e..8d1a91b7c 100644
+--- a/commands/service/parse.c
++++ b/commands/service/parse.c
+@@ -824,6 +824,8 @@ struct
+ 	{ "STIME",		SYS_STIME },
+ 	{ "VMCTL",		SYS_VMCTL },
+ 	{ "MEMSET",		SYS_MEMSET },
++	{ "CHDDL",             SYS_CHDDL },
++    { "CHSCHED",    SYS_CHSCHED },
+ 	{ NULL,		0 }
+ };
+ 
+diff --git a/commands/update_bootcfg/update_bootcfg.sh b/commands/update_bootcfg/update_bootcfg.sh
+index c5c352939..5c71512d8 100755
+--- a/commands/update_bootcfg/update_bootcfg.sh
++++ b/commands/update_bootcfg/update_bootcfg.sh
+@@ -2,7 +2,7 @@
+ set -e
+ 
+ ROOT=`printroot -r`
+-DEFAULTCFG=/etc/boot.cfg.default
++DEFAULTCFG=/usr/src/etc/boot.cfg.default
+ LOCALCFG=/etc/boot.cfg.local
+ TMP=/boot.cfg.temp
+ DIRSBASE=/boot/minix
+@@ -124,6 +124,7 @@ do
+ 	fi
+ done
+ 
++
+ if [ -r $LOCALCFG ]
+ then
+ 	# If the local config supplies a "default" option, we assume that this
+diff --git a/etc/boot.cfg.default b/etc/boot.cfg.default
+index 2ad2cc404..d43817717 100644
+--- a/etc/boot.cfg.default
++++ b/etc/boot.cfg.default
+@@ -2,7 +2,9 @@ clear=1
+ timeout=5
+ default=2
+ menu=Start MINIX 3:load_mods /boot/minix_default/mod*;multiboot /boot/minix_default/kernel rootdevname=$rootdevname $args
+-menu=Start latest MINIX 3:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname $args
++menu=Start latest MINIX 3 default:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=0 $args
++menu=Start latest MINIX 3 lottery:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=1 $args
++menu=Start latest MINIX 3 edf:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=2 $args
+ menu=Start latest MINIX 3 in single user mode:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname bootopts=-s $args
+ menu=Edit menu option:edit
+ menu=Drop to boot prompt:prompt
+diff --git a/include/minix/callnr.h b/include/minix/callnr.h
+index 6f145cf88..632825a54 100644
+--- a/include/minix/callnr.h
++++ b/include/minix/callnr.h
+@@ -65,6 +65,8 @@
+ #define SETGROUPS_O	  66
+ #define GETMCONTEXT       67
+ #define SETMCONTEXT       68
++#define PM_CHDDL          69
++#define PM_CHSCH          70
+ 
+ /* Posix signal handling. */
+ #define SIGACTION	  71
+@@ -107,7 +109,7 @@
+ 
+ #define GCOV_FLUSH	112	/* flush gcov data from server to gcov files */
+ 
+-#define PM_GETSID	113	/* PM getsid() */
++#define PM_GETSID	113	/* PM getsid() */      
+ 
+ #define TASK_REPLY	121	/* to VFS: reply code from drivers, not 
+ 				 * really a standalone call.
+diff --git a/include/minix/com.h b/include/minix/com.h
+index 7d57e7b34..0345b4808 100644
+--- a/include/minix/com.h
++++ b/include/minix/com.h
+@@ -352,8 +352,10 @@
+ 
+ #  define SYS_SAFEMEMSET (KERNEL_CALL + 56)	/* sys_safememset() */
+ 
++#  define SYS_CHDDL (KERNEL_CALL + 57)          /* sys_chddl() in pm server directly use kernel call */
++#  define SYS_CHSCHED (KERNEL_CALL + 58)    /* sys_chsched()  */
+ /* Total */
+-#define NR_SYS_CALLS	57	/* number of kernel calls */
++#define NR_SYS_CALLS	59	/* number of kernel calls */
+ 
+ #define SYS_CALL_MASK_SIZE BITMAP_CHUNKS(NR_SYS_CALLS)
+ 
+@@ -669,6 +671,10 @@
+ #define SCHEDCTL_PRIORITY	m9_s4   /* current scheduling priority */
+ #define SCHEDCTL_CPU		m9_l5   /* where to place this process */
+ 
++/* Field names for SYS_CHDDL. */
++#define CHDDL_ENDPOINT	m2_i1	/* endpt of process whose deadline to be changed */
++#define CHDDL_VALUE		m2_l2	/* value of deadline to be set */
++
+ /*===========================================================================*
+  *                Messages for the Reincarnation Server 		     *
+  *===========================================================================*/
+diff --git a/include/minix/syslib.h b/include/minix/syslib.h
+index f1bc43186..4396666d4 100644
+--- a/include/minix/syslib.h
++++ b/include/minix/syslib.h
+@@ -41,6 +41,9 @@ int sys_schedule(endpoint_t proc_ep, int priority, int quantum, int
+ int sys_schedctl(unsigned flags, endpoint_t proc_ep, int priority, int
+ 	quantum, int cpu);
+ 
++int sys_chddl(endpoint_t proc_ep, long deadline);
++/* flag == 1: update sched_t. Else: do not update. */
++int sys_chsched(int flag);
+ /* Shorthands for sys_runctl() system call. */
+ #define sys_stop(proc_ep) sys_runctl(proc_ep, RC_STOP, 0)
+ #define sys_delay_stop(proc_ep) sys_runctl(proc_ep, RC_STOP, RC_DELAY)
+diff --git a/include/unistd.h b/include/unistd.h
+index 55a146bac..0a04a6c7a 100644
+--- a/include/unistd.h
++++ b/include/unistd.h
+@@ -88,6 +88,7 @@ __dead	 void _exit(int);
+ int	 access(const char *, int);
+ unsigned int alarm(unsigned int);
+ int	 chdir(const char *);
++int chddl(long);
+ #if !defined(__minix) && (defined(_POSIX_C_SOURCE) || defined(_XOPEN_SOURCE))
+ int	chown(const char *, uid_t, gid_t) __RENAME(__posix_chown);
+ #else
+diff --git a/kernel/config.h b/kernel/config.h
+index 55c24a09f..74c7b84b1 100644
+--- a/kernel/config.h
++++ b/kernel/config.h
+@@ -16,6 +16,7 @@
+  * to keep all kernel calls enabled.
+  */
+ #define USE_FORK       	   1	/* fork a new process */
++#define USE_CHDDL          1    /* change deadline of a process */
+ #define USE_NEWMAP     	   1	/* set a new memory map */
+ #define USE_EXEC       	   1	/* update process after execute */
+ #define USE_CLEAR	   1	/* clean up after process exit */
+@@ -42,6 +43,7 @@
+ #define USE_PHYSCOPY  	   1 	/* copy using physical addressing */
+ #define USE_MEMSET  	   1	/* write char to a given memory area */
+ #define USE_RUNCTL         1	/* control stop flags of a process */
++#define USE_CHSCHED        1    /* change sched_t (kernel schedule policy) */
+ 
+ /* This section contains defines for valuable system resources that are used
+  * by device drivers. The number of elements of the vectors is determined by 
+diff --git a/kernel/glo.h b/kernel/glo.h
+index 8664a0d1b..6bbad66f4 100644
+--- a/kernel/glo.h
++++ b/kernel/glo.h
+@@ -38,6 +38,11 @@ EXTERN unsigned lost_ticks;	/* clock ticks counted outside clock task */
+ EXTERN char *ipc_call_names[IPCNO_HIGHEST+1]; /* human-readable call names */
+ EXTERN struct proc *kbill_kcall; /* process that made kernel call */
+ EXTERN struct proc *kbill_ipc; /* process that invoked ipc */
++extern int sched_t;		/* scheduling algorithm
++				 * 0 default algorithm
++				 * 1 lottery algorithm
++				 * 2 EDF algorithm
++				 */
+ 
+ /* Interrupt related variables. */
+ EXTERN irq_hook_t irq_hooks[NR_IRQ_HOOKS];	/* hooks for general use */
+diff --git a/kernel/main.c b/kernel/main.c
+index 48ac62368..99e0f0896 100644
+--- a/kernel/main.c
++++ b/kernel/main.c
+@@ -34,7 +34,7 @@
+ 
+ /* dummy for linking */
+ char *** _penviron;
+-
++int sched_t;
+ /* Prototype declarations for PRIVATE functions. */
+ static void announce(void);
+ 
+@@ -400,6 +400,13 @@ void cstart()
+   strlcpy(kinfo.release, OS_RELEASE, sizeof(kinfo.release));
+   strlcpy(kinfo.version, OS_VERSION, sizeof(kinfo.version));
+ 
++  /* Load scheduling algorithm, see "glo.h" for type of algorithm */
++  value = env_get("sched_t");
++  if(value)
++	  sched_t = atoi(value);
++  if(!value || sched_t < 0 || sched_t > 2)
++	  sched_t = 0;
++
+   /* Load average data initialization. */
+   kloadinfo.proc_last_slot = 0;
+   for(h = 0; h < _LOAD_HISTORY; h++)
+diff --git a/kernel/proc.c b/kernel/proc.c
+index 3e597a5ab..c814afa26 100644
+--- a/kernel/proc.c
++++ b/kernel/proc.c
+@@ -129,7 +129,7 @@ void proc_init(void)
+ 		rp->p_scheduler = NULL;		/* no user space scheduler */
+ 		rp->p_priority = 0;		/* no priority */
+ 		rp->p_quantum_size_ms = 0;	/* no quantum size */
+-
++                rp->p_deadline = 0;             /* no deadline as default */
+ 		/* arch-specific initialization */
+ 		arch_proc_reset(rp);
+ 	}
+@@ -141,6 +141,7 @@ void proc_init(void)
+ 		sp->s_bak_sig_mgr = NONE;
+ 	}
+ 
++
+ 	idle_priv.s_flags = IDL_F;
+ 	/* initialize IDLE structures for every CPU */
+ 	for (i = 0; i < CONFIG_MAX_CPUS; i++) {
+@@ -1535,6 +1536,10 @@ void enqueue(
+   rdy_tail = get_cpu_var(rp->p_cpu, run_q_tail);
+ 
+   /* Now add the process to the queue. */
++  if (sched_t == 2 && rp->p_deadline > 0) {
++      rp->p_priority = USER_Q;
++      q = USER_Q;
++  }
+   if (!rdy_head[q]) {		/* add to empty queue */
+       rdy_head[q] = rdy_tail[q] = rp; 		/* create a new queue */
+       rp->p_nextready = NULL;		/* mark new end */
+@@ -1609,14 +1614,27 @@ static void enqueue_head(struct proc *rp)
+   rdy_tail = get_cpu_var(rp->p_cpu, run_q_tail);
+ 
+   /* Now add the process to the queue. */
+-  if (!rdy_head[q]) {		/* add to empty queue */
+-      rdy_head[q] = rdy_tail[q] = rp; 		/* create a new queue */
+-      rp->p_nextready = NULL;		/* mark new end */
++  if (sched_t == 2 && rp->p_deadline > 0) {
++      /* if the process has deadline, add to queue[USER_Q] */
++      rp->p_priority = USER_Q;
++      if (!rdy_head[USER_Q]) {           /* add to empty queue */
++	  rdy_head[USER_Q] = rdy_tail[USER_Q] = rp;           /* create a new queue */
++      	  rp->p_nextready = NULL;           /* mark new end */
++      }
++      else {
++	  rp->p_nextready = rdy_head[USER_Q];
++	  rdy_head[USER_Q] = rp;
++      }
++  }
++  else {
++      if (!rdy_head[q]) {		/* add to empty queue */
++          rdy_head[q] = rdy_tail[q] = rp; 		/* create a new queue */
++          rp->p_nextready = NULL;		/* mark new end */
++      }
++      else						/* add to head of queue */
++          rp->p_nextready = rdy_head[q];		/* chain head of queue */
++          rdy_head[q] = rp;				/* set new queue head */
+   }
+-  else						/* add to head of queue */
+-      rp->p_nextready = rdy_head[q];		/* chain head of queue */
+-      rdy_head[q] = rp;				/* set new queue head */
+-
+   /* Make note of when this process was added to queue */
+   read_tsc_64(&(get_cpulocal_var(proc_ptr->p_accounting.enter_queue)));
+ 
+@@ -1697,6 +1715,18 @@ void dequeue(struct proc *rp)
+ #endif
+ }
+ 
++/*===========================================================================
++ *                            ticket_rand                                    *
++ *===========================================================================*/
++int ticket_rand(unsigned int seed) 
++{
++/* Self-implemented rand function for lottery scheduling.
++ * Should take the param io of function read_tsc(*hi, *lo) as seed.
++ */
++  return (int)((seed * 1103515245U + 12345U) & 0x7fffffff);
++}
++
++#define PRIO_2_TICKET(prio) MIN_USER_Q - prio + 1 
+ /*===========================================================================*
+  *				pick_proc				     * 
+  *===========================================================================*/
+@@ -1717,15 +1747,114 @@ static struct proc * pick_proc(void)
+    * If there are no processes ready to run, return NULL.
+    */
+   rdy_head = get_cpulocal_var(run_q_head);
+-  for (q=0; q < NR_SCHED_QUEUES; q++) {	
+-	if(!(rp = rdy_head[q])) {
+-		TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
+-		continue;
++  
++  if (sched_t == 0) {
++	/* Default scheduling algorithm */
++	for (q=0; q < NR_SCHED_QUEUES; q++) {
++		if(!(rp = rdy_head[q])) {
++			TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++			continue;
++		}
++		assert(proc_is_runnable(rp));
++		if (priv(rp)->s_flags & BILLABLE)
++			get_cpulocal_var(bill_ptr) = rp; /* bill for system time */
++		return rp;
++	}
++	
++  }
++  else if (sched_t == 1) {
++  	/* Lottery scheduling algorithm */
++  	unsigned int total_tickets = 0; /* total number of tickets of all the processes */
++	/* Lottery scheduling should not block the system process */
++	for (q=0; q < USER_Q; q++) {
++                if(!(rp = rdy_head[q])) {
++                        TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++			continue;
++		}
++		assert(proc_is_runnable(rp));
++		if (priv(rp)->s_flags & BILLABLE)
++			get_cpulocal_var(bill_ptr) = rp; /* bill for system time */
++		return rp;
++	}
++  	for (q=USER_Q; q < NR_SCHED_QUEUES; q++) {
++		if(!(rp = rdy_head[q])) {
++			TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++			continue;
++		}
++		while (rp != NULL) {
++			if (proc_is_runnable(rp)) {
++				total_tickets += PRIO_2_TICKET(rp->p_priority);//rp->p_ticket;
++			}
++			rp = rp->p_nextready;
++		}
++  	}
++  	if (total_tickets > 0) {
++  		u32_t hi, io;
++  		read_tsc(&hi, &io);
++  		unsigned int lucky = (unsigned int)(ticket_rand(io) % total_tickets); /* chosen ticket number */
++  		unsigned int ticket_count = 0;
++		for (q=USER_Q; q < NR_SCHED_QUEUES; q++) {
++			if (!(rp = rdy_head[q])) {
++				TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++				continue;
++			}
++			while (rp != NULL) {
++				if (proc_is_runnable(rp)) {
++					ticket_count += PRIO_2_TICKET(rp->p_priority);//rp->p_ticket;
++					if (ticket_count > lucky) {
++						if (priv(rp)->s_flags & BILLABLE)
++							get_cpulocal_var(bill_ptr) = rp;
++						return rp;
++					}
++				}
++				rp = rp->p_nextready;
++			}
++  		}
++  	}
++  }
++  else if (sched_t == 2) {
++	/* EDF scheduling algorithm */
++	register struct proc *next;               /* next runnable process */
++	/* EDF scheduling should not block the system process */
++        for (q=0; q < USER_Q; q++) {
++                if(!(rp = rdy_head[q])) {
++                        TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++			continue;
++		}
++		assert(proc_is_runnable(rp));
++		if (priv(rp)->s_flags & BILLABLE)
++			get_cpulocal_var(bill_ptr) = rp; /* bill for system time */
++		return rp;
++	}
++	for (q=USER_Q; q < NR_SCHED_QUEUES; q++) {
++                if(!(rp = rdy_head[q])) {
++                        TRACE(VF_PICKPROC, printf("cpu %d queue %d empty\n", cpuid, q););
++			continue;
++		}
++		/* the processes with deadline is put into queue[USER_Q] in enqueue() and enqueue_head() */
++                if (q == USER_Q) {
++                        rp = rdy_head[q];
++			next = rp->p_nextready;
++			while (next != NULL) {
++                                if (next->p_deadline > 0) {
++  					if ((rp->p_deadline == 0) || ((rp->p_deadline > next->p_deadline) &&
++								(next->p_deadline != 0))) {
++  						if (proc_is_runnable(next)) {
++  							rp = next;
++						}
++					}
++				}
++				next = next->p_nextready;
++			}
++		}
++		assert(proc_is_runnable(rp));
++		if (priv(rp)->s_flags & BILLABLE)
++			get_cpulocal_var(bill_ptr) = rp; /* bill for system time */
++		return rp;
+ 	}
+-	assert(proc_is_runnable(rp));
+-	if (priv(rp)->s_flags & BILLABLE)	 	
+-		get_cpulocal_var(bill_ptr) = rp; /* bill for system time */
+-	return rp;
++  }
++  else {
++  	return NULL;  /* Unreachable */
+   }
+   return NULL;
+ }
+diff --git a/kernel/proc.h b/kernel/proc.h
+index 439396937..9033eb995 100644
+--- a/kernel/proc.h
++++ b/kernel/proc.h
+@@ -27,12 +27,14 @@ struct proc {
+   volatile u32_t p_rts_flags;	/* process is runnable only if zero */
+   volatile u32_t p_misc_flags;	/* flags that do not suspend the process */
+ 
++  long p_deadline;              /* current process deadline */	
+   char p_priority;		/* current process priority */
+   u64_t p_cpu_time_left;	/* time left to use the cpu */
+   unsigned p_quantum_size_ms;	/* assigned time quantum in ms
+ 				   FIXME remove this */
+   struct proc *p_scheduler;	/* who should get out of quantum msg */
+   unsigned p_cpu;		/* what CPU is the process running on */
++  //unsigned int p_ticket;                 /* number of tickets possessed by the process */
+ #ifdef CONFIG_SMP
+   bitchunk_t p_cpu_mask[BITMAP_CHUNKS(CONFIG_MAX_CPUS)]; /* what CPUs is hte
+ 							    process allowed to
+diff --git a/kernel/system.c b/kernel/system.c
+index e8fe0387a..ca40ba8b7 100644
+--- a/kernel/system.c
++++ b/kernel/system.c
+@@ -262,6 +262,11 @@ void system_init(void)
+   map(SYS_SCHEDULE, do_schedule);	/* reschedule a process */
+   map(SYS_SCHEDCTL, do_schedctl);	/* change process scheduler */
+ 
++  /* Change Deadline */
++  map(SYS_CHDDL, do_chddl); /* change deadline */
++
++  /* Change scheduling method */
++  map(SYS_CHSCHED, do_chsched);
+ }
+ /*===========================================================================*
+  *				get_priv				     *
+diff --git a/kernel/system.h b/kernel/system.h
+index fa58823b6..f72456363 100644
+--- a/kernel/system.h
++++ b/kernel/system.h
+@@ -37,6 +37,10 @@ int do_exec(struct proc * caller, message *m_ptr);
+ #define do_exec NULL
+ #endif
+ 
++int do_chddl(struct proc * caller, message *m_ptr);
++#if ! USE_CHDDL
++#define do_chddl NULL
++#endif
+ int do_fork(struct proc * caller, message *m_ptr);
+ #if ! USE_FORK
+ #define do_fork NULL
+@@ -207,5 +211,10 @@ int do_statectl(struct proc * caller, message *m_ptr);
+ #define do_statectl NULL
+ #endif
+ 
++int do_chsched(struct proc * caller, message *m_ptr);
++#if ! USE_CHSCHED
++#define do_chsched NULL
++#endif
++
+ #endif	/* SYSTEM_H */
+ 
+diff --git a/kernel/system/Makefile.inc b/kernel/system/Makefile.inc
+index 69efe4e87..8fbeee704 100644
+--- a/kernel/system/Makefile.inc
++++ b/kernel/system/Makefile.inc
+@@ -4,6 +4,7 @@
+ .PATH:	${.CURDIR}/system
+ SRCS+= 	\
+ 	do_fork.c \
++	do_chddl.c \
+ 	do_exec.c \
+ 	do_clear.c \
+ 	do_exit.c \
+@@ -37,7 +38,8 @@ SRCS+= 	\
+ 	do_vmctl.c \
+ 	do_schedule.c \
+ 	do_schedctl.c \
+-	do_statectl.c
++	do_statectl.c \
++	do_chsched.c
+ 
+ .if ${MACHINE_ARCH} == "i386"
+ SRCS+=  \
+diff --git a/kernel/system/do_chddl.c b/kernel/system/do_chddl.c
+new file mode 100644
+index 000000000..c36f92b98
+--- /dev/null
++++ b/kernel/system/do_chddl.c
+@@ -0,0 +1,29 @@
++/* The kernel call implemented in this file:
++ *   m_type:	SYS_CHDDL
++ *
++ * The parameters for this kernel call are:
++ *    m2_i1:	CHDDL_ENDPOINT	(endpt of process whose deadline to be changed)
++ *    m2_l2:	CHDDL_VALUE		(value of deadline to be set)
++ */
++
++#include "kernel/system.h"
++#include "kernel/vm.h"
++#include <signal.h>
++#include <string.h>
++#include <assert.h>
++
++#include <minix/endpoint.h>
++#include <minix/u64.h>
++#if USE_CHDDL
++
++/*===========================================================================*
++ *				do_chddl					     *
++ *===========================================================================*/
++int do_chddl(struct proc * caller, message * m_ptr)
++{
++	struct proc *rp;
++	rp = proc_addr(m_ptr->m2_i1);
++	rp->p_deadline = m_ptr->m2_l2;
++	return OK;
++}
++#endif
+diff --git a/kernel/system/do_chsched.c b/kernel/system/do_chsched.c
+new file mode 100644
+index 000000000..68489c25a
+--- /dev/null
++++ b/kernel/system/do_chsched.c
+@@ -0,0 +1,46 @@
++/* The kernel call implemented in this file:
++ *   m_type:	SYS_CHSCHED
++ *
++ * The parameters for this kernel call are:
++ *    m1_i1:    the value of new 'sched_t', int
++ */
++
++#include "kernel/system.h"
++#include "kernel/vm.h"
++#include <signal.h>
++#include <string.h>
++#include <assert.h>
++
++#include <minix/endpoint.h>
++#include <minix/u64.h>
++
++#if USE_CHSCHED
++
++
++/*===========================================================================*
++ *				do_chsched				     *
++ *===========================================================================*/
++int do_chsched(struct proc * caller, message *m_ptr) {
++//    printf("do_chsched from KERNEL: called\n");
++    if (m_ptr->m1_i1 == 1) {
++        sched_t = (sched_t + 1) % 3;
++        switch (sched_t) {
++            case 0:
++               printf("KERNEL: sched_t changed to default!\n");
++               break;
++            case 1:
++               printf("KERNEL: sched_t changed to lottery!\n");
++               break;
++            case 2:
++                printf("KERNEL: sched_t changed to EDF!\n");
++                break;
++            default:
++                printf("KERNEL: wrong sched_t value.\n");
++        }
++        printf("KERNEL: sched_t = %d now.\n", sched_t);
++    }
++//    printf("do_chsched from KERNEL: quit\n");
++    return OK;
++}
++
++#endif /* USE_CHSCHED */
+\ No newline at end of file
+diff --git a/lib/libc/sys-minix/Makefile.inc b/lib/libc/sys-minix/Makefile.inc
+index 6f5209701..e4adb51fb 100644
+--- a/lib/libc/sys-minix/Makefile.inc
++++ b/lib/libc/sys-minix/Makefile.inc
+@@ -1,7 +1,7 @@
+ .PATH:	${.CURDIR}/sys-minix
+ 
+ SRCS+= 	accept.c access.c bind.c brk.c sbrk.c m_closefrom.c getsid.c \
+-	chdir.c chmod.c fchmod.c chown.c fchown.c chroot.c close.c \
++	chdir.c chmod.c fchmod.c chown.c fchown.c chddl.c chroot.c close.c \
+ 	connect.c dup.c dup2.c execve.c fcntl.c flock.c fpathconf.c fork.c \
+ 	fstatfs.c fstatvfs.c fsync.c ftruncate.c getdents.c getegid.c getgid.c \
+ 	getgroups.c getitimer.c setitimer.c __getlogin.c getpeername.c \
+diff --git a/lib/libc/sys-minix/chddl.c b/lib/libc/sys-minix/chddl.c
+new file mode 100644
+index 000000000..a0de408a5
+--- /dev/null
++++ b/lib/libc/sys-minix/chddl.c
+@@ -0,0 +1,20 @@
++#include <sys/cdefs.h>
++#include "namespace.h"
++#include <lib.h>
++
++#include <unistd.h>
++#include <sys/time.h>
++
++int chddl(long deadline){
++	struct timeval tvalue;
++	struct timezone tzone;
++	message m;
++	
++	alarm((unsigned int)deadline);
++	if(deadline>0){
++    		gettimeofday(&tvalue,&tzone);
++    		deadline = tvalue.tv_sec + deadline; 
++    	}
++	m.m2_l2 = deadline;
++	return (_syscall(PM_PROC_NR,PM_CHDDL,&m));    
++}
+\ No newline at end of file
+diff --git a/lib/libsys/Makefile b/lib/libsys/Makefile
+index 47343cc72..af93bfc72 100644
+--- a/lib/libsys/Makefile
++++ b/lib/libsys/Makefile
+@@ -35,6 +35,8 @@ SRCS+=  \
+ 	sef_signal.c \
+ 	sqrt_approx.c \
+ 	stacktrace.c \
++	sys_chddl.c \
++	sys_chsched.c \
+ 	sys_abort.c \
+ 	sys_clear.c \
+ 	sys_cprof.c \
+diff --git a/lib/libsys/sys_chddl.c b/lib/libsys/sys_chddl.c
+new file mode 100644
+index 000000000..94b0c6ad5
+--- /dev/null
++++ b/lib/libsys/sys_chddl.c
+@@ -0,0 +1,14 @@
++#include "syslib.h"
++
++/*===========================================================================*
++ *                                sys_chddl			     	     *
++ *===========================================================================*/
++int sys_chddl(proc_ep, deadline)
++endpoint_t proc_ep;
++long deadline; 
++{
++	message m;
++	m.m2_i1 = proc_ep;
++	m.m2_l2 = deadline;
++	return (_kernel_call(SYS_CHDDL, &m));
++}
+diff --git a/lib/libsys/sys_chsched.c b/lib/libsys/sys_chsched.c
+new file mode 100644
+index 000000000..36f1cb35b
+--- /dev/null
++++ b/lib/libsys/sys_chsched.c
+@@ -0,0 +1,13 @@
++#include "syslib.h"
++
++/*===========================================================================*
++ *                                sys_chsched			     	     *
++ *===========================================================================*/
++int sys_chsched(flag)
++        int flag;
++{
++    message m;
++    m.m1_i1 = flag;
++    return (_kernel_call(SYS_CHSCHED, &m));
++}
++
+diff --git a/servers/is/dmp.c b/servers/is/dmp.c
+index bbae0f81c..57f77e6b7 100644
+--- a/servers/is/dmp.c
++++ b/servers/is/dmp.c
+@@ -30,8 +30,12 @@ struct hook_entry {
+ 	{ SF4,	dtab_dmp, "Device/Driver mapping" },
+ 	{ SF5,	mapping_dmp, "Print key mappings" },
+ 	{ SF6,	rproc_dmp, "Reincarnation server process table" },
++    { SF7, chsched_dmp, "Switch schedule method"},
+ 	{ SF8,  data_store_dmp, "Data store contents" },
+ 	{ SF9,  procstack_dmp, "Processes with stack traces" },
++//    { AF1,  chsched_dmp0, "Change schedule method to default"},
++//    { AF2,  chsched_dmp1, "Change schedule method to lottery"},
++//    { AF3,  chsched_dmp2, "Change schedule method to EDF"},
+ };
+ 
+ /* Define hooks for the debugging dumps. This table maps function keys
+diff --git a/servers/is/dmp_kernel.c b/servers/is/dmp_kernel.c
+index 34f477e1f..d5b29eaf5 100644
+--- a/servers/is/dmp_kernel.c
++++ b/servers/is/dmp_kernel.c
+@@ -7,6 +7,7 @@
+ #include <minix/endpoint.h>
+ #include <minix/sysutil.h>
+ #include <minix/sys_config.h>
++#include <minix/syslib.h>
+ #include "kernel/const.h"
+ #include "kernel/config.h"
+ #include "kernel/debug.h"
+@@ -57,6 +58,17 @@ struct boot_image image[NR_BOOT_PROCS];
+ 
+ extern struct minix_kerninfo *_minix_kerninfo;
+ 
++/*===========================================================================*
++ *				chsched_dmp				     *
++ *===========================================================================*/
++void chsched_dmp() {
++    message m;
++    m.m2_i1 = 1;
++    _syscall(PM_PROC_NR,PM_CHSCH,&m); 
++    printf("myKEYBOARD: Changed sched_t.\n\n");
++}
++
++
+ /*===========================================================================*
+  *				kmessages_dmp				     *
+  *===========================================================================*/
+diff --git a/servers/is/proto.h b/servers/is/proto.h
+index bc8a8c590..16ed10aa6 100644
+--- a/servers/is/proto.h
++++ b/servers/is/proto.h
+@@ -18,6 +18,7 @@ void irqtab_dmp(void);
+ void kmessages_dmp(void);
+ void monparams_dmp(void);
+ void kenv_dmp(void);
++void chsched_dmp(void);
+ 
+ /* dmp_pm.c */
+ void mproc_dmp(void);
+diff --git a/servers/pm/Makefile b/servers/pm/Makefile
+index 906543213..269c56c20 100644
+--- a/servers/pm/Makefile
++++ b/servers/pm/Makefile
+@@ -4,7 +4,7 @@
+ PROG=	pm
+ SRCS=	main.c forkexit.c break.c exec.c time.c alarm.c \
+ 	signal.c utility.c table.c getset.c misc.c \
+-	profile.c schedule.c
++	profile.c schedule.c chddl.c chsch.c
+ 
+ .if ${USE_MCONTEXT} != "no"
+ SRCS+= mcontext.c
+diff --git a/servers/pm/chddl.c b/servers/pm/chddl.c
+new file mode 100644
+index 000000000..925fe369c
+--- /dev/null
++++ b/servers/pm/chddl.c
+@@ -0,0 +1,19 @@
++#include "pm.h"
++#include <sys/stat.h>
++#include <sys/ptrace.h>
++#include <minix/callnr.h>
++#include <minix/endpoint.h>
++#include <minix/com.h>
++#include <minix/syslib.h>
++#include <minix/vm.h>
++#include <minix/ipc.h>
++#include <sys/resource.h>
++#include "glo.h"
++#include "mproc.h"
++#include "param.h"
++
++int do_chddl(){
++	//sys_clear(m_in.m2_l2);
++	sys_chddl(who_p,m_in.m2_l2);
++	return OK;
++}
+\ No newline at end of file
+diff --git a/servers/pm/chsch.c b/servers/pm/chsch.c
+new file mode 100644
+index 000000000..9af76e1ab
+--- /dev/null
++++ b/servers/pm/chsch.c
+@@ -0,0 +1,19 @@
++#include "pm.h"
++#include <sys/stat.h>
++#include <sys/ptrace.h>
++#include <minix/callnr.h>
++#include <minix/endpoint.h>
++#include <minix/com.h>
++#include <minix/syslib.h>
++#include <minix/vm.h>
++#include <minix/ipc.h>
++#include <sys/resource.h>
++#include "glo.h"
++#include "mproc.h"
++#include "param.h"
++
++int do_chsch(){
++	//sys_clear(m_in.m2_l2);
++	sys_chsched(1);
++	return OK;
++}
+\ No newline at end of file
+diff --git a/servers/pm/proto.h b/servers/pm/proto.h
+index 00646d3ed..a5ea06adc 100644
+--- a/servers/pm/proto.h
++++ b/servers/pm/proto.h
+@@ -35,6 +35,12 @@ int wait_test(struct mproc *rmp, struct mproc *child);
+ int do_get(void);
+ int do_set(void);
+ 
++/* chddl.c */
++int do_chddl(void);
++
++/*chsch.c*/
++int do_chsch(void);
++
+ /* main.c */
+ int main(void);
+ void setreply(int proc_nr, int result);
+diff --git a/servers/pm/table.c b/servers/pm/table.c
+index 5051cec7d..bd170520d 100644
+--- a/servers/pm/table.c
++++ b/servers/pm/table.c
+@@ -80,8 +80,8 @@ int (*call_vec[])(void) = {
+ 	do_set, 	/* 66 = setgroups */
+ 	do_getmcontext,	/* 67 = getmcontext */
+ 	do_setmcontext,	/* 68 = setmcontext */
+-	no_sys,		/* 69 = unused	*/
+-	no_sys,		/* 70 = unused	*/
++	do_chddl,	/* 69 = chddl	*/
++	do_chsch,	/* 70 = chsch	*/
+ 	do_sigaction,	/* 71 = sigaction   */
+ 	do_sigsuspend,	/* 72 = sigsuspend  */
+ 	do_sigpending,	/* 73 = sigpending  */
+diff --git a/testcase-p3/edf.c b/testcase-p3/edf.c
+new file mode 100644
+index 000000000..b2b6d2ec3
+--- /dev/null
++++ b/testcase-p3/edf.c
+@@ -0,0 +1,86 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <signal.h>
++#include <sys/wait.h>
++#include <sys/types.h>
++#include <lib.h>
++#include <time.h>
++
++void proc(int id)
++{
++  int loop;
++  switch (id)
++  {
++  case 1:
++    // child process 1, deadline = 15
++    chddl(15);
++    printf("proc1 started\n");
++    sleep(1);
++    break;
++  case 2:
++    // child process 2, deadline = 25
++    chddl(25);
++    printf("proc2 started\n");
++    sleep(1);
++    break;
++  case 3:
++    // child process 3, deadline = 35
++    chddl(35);
++    printf("proc3 started\n");
++    sleep(1);
++    break;
++  case 4: 
++    // child process 4, no deadline
++    chddl(0);
++    printf("proc4 started\n");
++
++    break;
++  }
++  for (loop = 1; loop < 30; loop++)
++  {
++    // 0 - 5
++    //4 1:0+15 2:0+25 3:0+35
++    // 5 - 10
++    //4 1:0+15 3:5+15 2:0+25
++    // 10 - 15
++    //4 3:5+15 2:0+25 1:10+30
++    // 15 - 20
++    //4 2:0+25 1:10+30 3:15+30
++    // set deadline = 15 for child process 3 at loop = 5 (5s)
++    if (id == 3 && loop == 5)
++    {
++      chddl(15);
++      printf("Change proc3 deadline to 5+15s\n");
++    }
++    // set deadline = 30 for child process 1 at loop = 10 (10s)
++    if (id == 1 && loop == 10)
++    {
++      chddl(30);
++      printf("Change proc1 deadline to 10+30s\n");
++    }
++    // set deadline = 30 for child process 3 at loop = 15 
++    if (id == 3 && loop == 15)
++    {
++      chddl(30);
++      printf("Change proc3 deadline to 15+30s\n");
++    }
++    // sleep for 1s
++    sleep(1);
++    printf("prc%d tick %d\n", id, loop);
++  }
++  exit(0);
++}
++int main(void)
++{
++  // create five child process
++  for (int i = 1; i < 5; i++)
++  {
++    if (fork() == 0)
++    {
++      proc(i);
++    }
++  }
++  return 0;
++}
+diff --git a/testcase-p3/lottery.c b/testcase-p3/lottery.c
+new file mode 100644
+index 000000000..dbc40080b
+--- /dev/null
++++ b/testcase-p3/lottery.c
+@@ -0,0 +1,50 @@
++#include <stdlib.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <signal.h>
++#include <time.h>
++int deadline = 1;
++int exitflag = 0;
++pid_t pid = 0;
++unsigned long counter = 0;
++clock_t start;
++int i = 0;
++void sigint_cb(int signal)
++{
++    exitflag = 1;
++    if (i!=10) // parent process only for timer purpose
++        printf("pid:%d\t the %d most tickets \ttime:%d\n", getpid(), 10-i, clock() - start);
++}
++
++int main(int argc, char *argv[])
++{
++    int nice_val=2;
++    printf("Lottery testcase\n");
++    start = clock();
++    for (;i<10;i++){
++    pid = fork();
++    if (pid)
++    {
++        nice(deadline = nice_val);
++        
++    }else{
++        printf("proc:%d\t the %d most tickets is created\n", getpid(),10-i);
++        //child
++        break;
++    }
++    }
++    signal(SIGINT, sigint_cb);
++
++    if (i==10){ 
++        //parent
++        sleep(5);      
++        //signal(SIGINT,SIG_IGN);  
++        kill(0,SIGINT);
++    }
++    while (!exitflag)
++    {
++        counter++;
++    }
++
++
++}

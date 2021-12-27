@@ -11,9 +11,7 @@
 constexpr const char *LoadTableQuery::qname;
 
 QueryResult::Ptr LoadTableQuery::execute() {
-  using std::exception;
-  using std::ifstream;
-  using std::make_unique;
+  using namespace std;
   Database &db = Database::getInstance();
   try {
     ifstream infile(this->fileName);
@@ -23,7 +21,7 @@ QueryResult::Ptr LoadTableQuery::execute() {
     }
     db.loadTableFromStream(infile, this->fileName);
     infile.close();
-    return make_unique<NullQueryResult>();
+    return make_unique<SuccessMsgResult>(qname, targetTable);
   } catch (const exception &e) {
     return make_unique<ErrorMsgResult>(qname, e.what());
   }

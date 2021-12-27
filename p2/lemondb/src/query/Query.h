@@ -90,7 +90,7 @@ public:
    */
   bool
   testKeyCondition(Table &table,
-           const std::function<void(bool, Table::Object::Ptr &&)>& function);
+                   std::function<void(bool, Table::Object::Ptr &&)> function);
 
   ComplexQuery(std::string targetTable, std::vector<std::string> operands,
                std::vector<QueryCondition> condition)

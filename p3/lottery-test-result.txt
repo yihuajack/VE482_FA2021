@@ -1,0 +1,21 @@
+Lottery testcase
+proc:229	 the 0 most tickets is created
+proc:230	 the 1 most tickets is created
+proc:231	 the 2 most tickets is created
+proc:232	 the 3 most tickets is created
+proc:233	 the 4 most tickets is created
+proc:234	 the 5 most tickets is created
+proc:235	 the 6 most tickets is created
+proc:236	 the 7 most tickets is created
+proc:237	 the 8 most tickets is created
+proc:238	 the 9 most tickets is created
+pid:238	 the 9 most tickets 	time:97
+pid:237	 the 8 most tickets 	time:96
+pid:236	 the 7 most tickets 	time:109
+pid:235	 the 6 most tickets 	time:134
+pid:234	 the 5 most tickets 	time:144
+pid:233	 the 4 most tickets 	time:180
+pid:232	 the 3 most tickets 	time:194
+pid:231	 the 2 most tickets 	time:207
+pid:230	 the 1 most tickets 	time:233
+pid:229	 the 0 most tickets 	time:256

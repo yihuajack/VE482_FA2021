@@ -1,0 +1,10 @@
+clear=1
+timeout=5
+default=2
+menu=Start MINIX 3:load_mods /boot/minix_default/mod*;multiboot /boot/minix_default/kernel rootdevname=$rootdevname $args
+menu=Start latest MINIX 3 default:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=0 $args
+menu=Start latest MINIX 3 lottery:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=1 $args
+menu=Start latest MINIX 3 edf:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname sched_t=2 $args
+menu=Start latest MINIX 3 in single user mode:load_mods /boot/minix_latest/mod*;multiboot /boot/minix_latest/kernel rootdevname=$rootdevname bootopts=-s $args
+menu=Edit menu option:edit
+menu=Drop to boot prompt:prompt

@@ -12,11 +12,7 @@
 constexpr const char *InsertQuery::qname;
 
 QueryResult::Ptr InsertQuery::execute() {
-  using std::exception;
-  using std::invalid_argument;
-  using std::literals::string_literals::operator""s;
-  using std::make_unique;
-  using std::vector;
+  using namespace std;
   if (this->operands.empty())
     return make_unique<ErrorMsgResult>(qname, this->targetTable.c_str(),
                                        "No operand (? operands)."_f %
@@ -31,7 +27,7 @@ QueryResult::Ptr InsertQuery::execute() {
       data.emplace_back(strtol(it->c_str(), nullptr, 10));
     }
     table.insertByIndex(key, move(data));
-    return std::make_unique<NullQueryResult>();
+    return std::make_unique<SuccessMsgResult>(qname, targetTable);
   } catch (const TableNameNotFound &e) {
     return make_unique<ErrorMsgResult>(qname, this->targetTable,
                                        "No such table."s);
@@ -43,7 +39,7 @@ QueryResult::Ptr InsertQuery::execute() {
                                        "Unknown error '?'"_f % e.what());
   } catch (const exception &e) {
     return make_unique<ErrorMsgResult>(qname, this->targetTable,
-                                       "Unknown error '?'."_f % e.what());
+                                       "Unkonwn error '?'."_f % e.what());
   }
 }
 
